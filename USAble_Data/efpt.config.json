@@ -1,0 +1,68 @@
+﻿{
+   "CodeGenerationMode": 0,
+   "ContextClassName": "_DBContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": null,
+   "ProjectRootNamespace": "USAble_Data",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[Discount]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MenuItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MenuItemCategory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Order]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OrderMenuItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OrderTax]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Tax]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[User]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPassword]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "D:\\Coding Projects\\USAble Life Interview Project\\USAble_DB\\USAble_DB.sqlproj",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseNoConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

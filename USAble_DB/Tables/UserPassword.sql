@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[UserPassword]
+(
+	[Id] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	[Password] BINARY(60) NOT NULL,
+	[Salt] NVARCHAR(255) NOT NULL,
+	[CreatedDate] DATETIME NOT NULL,
+	[Active] BIT NOT NULL,
+	[UserId] INT NOT NULL,
+	FOREIGN KEY (UserId) REFERENCES [dbo].[User](Id)
+)
