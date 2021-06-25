@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-viewer',
-  styleUrls: ['user-viewer.component.scss'],
+  styleUrls: ['user-viewer.component.css'],
   template: `
     <div>
       User Viewer

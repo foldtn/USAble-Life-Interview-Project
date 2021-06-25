@@ -4,7 +4,7 @@ import { User } from '../../../models/user.interface';
 
 @Component({
   selector: 'app-user-detail',
-  styleUrls: ['user-detail.component.scss'],
+  styleUrls: ['user-detail.component.css'],
   template: `
     <div>
       User Detail

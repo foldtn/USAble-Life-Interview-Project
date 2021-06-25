@@ -4,7 +4,7 @@ import { User } from '../../../models/user.interface';
 
 @Component({
   selector: 'app-user-form',
-  styleUrls: ['user-form.component.scss'],
+  styleUrls: ['user-form.component.css'],
   template: `
     <div>
       User Form

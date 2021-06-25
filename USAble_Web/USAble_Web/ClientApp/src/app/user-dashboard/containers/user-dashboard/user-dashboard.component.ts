@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-dashboard',
-  styleUrls: ['user-dashboard.component.scss'],
+  styleUrls: ['user-dashboard.component.css'],
   template: `
     <div>
       User Dashboard

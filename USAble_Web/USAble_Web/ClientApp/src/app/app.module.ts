@@ -7,15 +7,13 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { HomeComponent } from './components/home/home.component';
-import { CounterComponent } from './components/counter/counter.component';
-import { FetchDataComponent } from './components/fetch-data/fetch-data.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
 
 const routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'counter', component: CounterComponent },
-  { path: 'fetch-data', component: FetchDataComponent },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
@@ -23,8 +21,7 @@ const routes = [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent
+    NotFoundComponent,
   ],
   imports: [
     // Angular Modules
