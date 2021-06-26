@@ -9,7 +9,7 @@ namespace USAble_Data
     public partial class UserPassword
     {
         public int Id { get; set; }
-        public byte[] Password { get; set; }
+        public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }

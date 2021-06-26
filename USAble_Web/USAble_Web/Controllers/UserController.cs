@@ -29,7 +29,7 @@ namespace USAble_Web.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("getAll")]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();

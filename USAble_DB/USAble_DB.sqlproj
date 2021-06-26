@@ -57,11 +57,13 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Tables" />
+    <Folder Include="Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Discount.sql" />
     <Build Include="Tables\MenuItem.sql" />
     <Build Include="Tables\MenuItemCategory.sql" />
+    <Build Include="Tables\UserType.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Order.sql" />
@@ -70,5 +72,8 @@
     <Build Include="Tables\Tax.sql" />
     <Build Include="Tables\User.sql" />
     <Build Include="Tables\UserPassword.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\InitializeDB.PostDeployment.sql" />
   </ItemGroup>
 </Project>
