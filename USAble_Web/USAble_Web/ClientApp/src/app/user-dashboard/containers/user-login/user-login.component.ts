@@ -1,14 +1,55 @@
-import { Component, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
+
+import { AuthenticationService} from '../../../services/authentication.service';
+
+import { User } from '../../../models/user.interface';
 
 @Component({
   selector: 'app-user-login',
-  styleUrls: ['user-login.component.css'],
-  template: `
-    <div>
-      Login page
-    </div>
-  `
+  styleUrls: ['./user-login.component.css'],
+  templateUrl: './user-login.component.html'
 })
-export class UserLoginComponent {
+export class UserLoginComponent implements OnInit {
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+  error = '';
 
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService
+  ) {
+    // redirect to home if already logged in
+    if (this.authenticationService.currentUserValue) {
+      this.router.navigate(['/']);
+    }
+  }
+
+  ngOnInit() {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
+
+  handleSubmit(event: User, isValid: boolean) {
+    this.submitted = true;
+
+    //stop here if form is invalid
+    if (!isValid) {
+      return;
+    }
+
+    this.authenticationService.login(event.username, event.password)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate([this.returnUrl]);
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        }
+      )
+  }
 }

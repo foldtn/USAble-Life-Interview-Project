@@ -6,8 +6,8 @@ using USAble_Web.Helpers;
 
 namespace USAble_Web.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class UserController : ControllerBase
     {
         private IUserService _userService;

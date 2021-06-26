@@ -1,0 +1,57 @@
+<div class="col-md-8 offset-md-2 mt-5">
+  <div class="card">
+    <h4 class="card-header">User Login</h4>
+    <div class="card-body">
+      <form (ngSubmit)="handleSubmit(form.value, form.valid)" #form="ngForm" novalidate aria-label="Login Form">
+        <div class="form-group row">
+          <div class="col-md-4">
+            <label for="username"><span class="requiredAsterisk">*</span> User Name:</label>
+          </div>
+          <div class="col-md-8">
+            <input id="username"
+                   class="form-control"
+                   type="text"
+                   name="username"
+                   required
+                   #username="ngModel"
+                   ngModel
+                   placeholder="Enter an Username"
+                   aria-label="Username Input"
+            />
+          </div>
+        </div>
+        <div *ngIf="username.errors?.required && username.dirty" class="row error">
+          <div class="offset-md-4">
+            <p><strong>Username is required.</strong></p>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-4">
+            <label for="password"><span class="requiredAsterisk">*</span> Password:</label>
+          </div>
+          <div class="col-md-8">
+            <input id="password"
+                   class="form-control"
+                   type="password"
+                   name="password"
+                   required #password="ngModel"
+                   ngModel
+                   placeholder="Enter a password"
+                   aria-label="Password Input"
+            />
+          </div>
+        </div>
+        <div *ngIf="password.errors?.required && password.dirty" class="row error">
+          <div class="offset-md-4">
+            <p><strong>Password is required.</strong></p>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center">
+          <button type="submit" [disabled]="form.invalid" class="btn btn-primary btn-lg" aria-label="Submit Form Button">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

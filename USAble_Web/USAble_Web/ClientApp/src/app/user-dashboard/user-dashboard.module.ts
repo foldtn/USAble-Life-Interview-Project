@@ -16,16 +16,18 @@ import { UserFormComponent } from './components/user-form/user-form.component';
 // Services
 import { UserDashboardService } from './user-dashboard.service';
 
+import { AuthGuard } from '../helpers/auth.guard';
+
 const routes: Routes = [
   {
     path: 'users',
     children: [
-      { path: '', component: UserDashboardComponent },
-      { path: ':id', component: UserViewerComponent },
+      { path: '', component: UserDashboardComponent, canActivate: [AuthGuard] },
+      { path: ':id', component: UserViewerComponent, canActivate: [AuthGuard] },
     ]
   },
   { path: 'login', component: UserLoginComponent },
-  { path: 'userProfile', component: UserProfileComponent },
+  { path: 'userProfile', component: UserProfileComponent, canActivate: [AuthGuard]  },
 ];
 
 @NgModule({

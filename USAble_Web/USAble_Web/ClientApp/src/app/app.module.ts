@@ -11,6 +11,9 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 
 import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
 
+import { JwtInterceptor} from './helpers/jwt.interceptor';
+import { ErrorInterceptor } from './helpers/error.interceptor';
+
 const routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: '**', component: NotFoundComponent },
@@ -32,7 +35,10 @@ const routes = [
     // Custom Modules
     UserDashboardModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

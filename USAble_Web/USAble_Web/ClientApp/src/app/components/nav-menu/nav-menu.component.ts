@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './nav-menu.component.html'
 })
 export class NavMenuComponent implements OnInit {
-  isLoggedIn = true;
+  isLoggedIn = false;
 
   ngOnInit() {
   }
