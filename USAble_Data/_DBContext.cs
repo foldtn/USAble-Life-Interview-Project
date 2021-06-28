@@ -7,32 +7,35 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace USAble_Data
 {
-    public partial class _USAbleDbContext : DbContext
+    public partial class _DBContext : DbContext
     {
-        public _USAbleDbContext()
+        public _DBContext()
         {
         }
 
-        public _USAbleDbContext(DbContextOptions<_USAbleDbContext> options)
+        public _DBContext(DbContextOptions<_DBContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Discount> Discount { get; set; }
-        public virtual DbSet<MenuItem> MenuItem { get; set; }
-        public virtual DbSet<MenuItemCategory> MenuItemCategory { get; set; }
-        public virtual DbSet<Order> Order { get; set; }
-        public virtual DbSet<OrderMenuItem> OrderMenuItem { get; set; }
-        public virtual DbSet<OrderTax> OrderTax { get; set; }
-        public virtual DbSet<Tax> Tax { get; set; }
-        public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<UserPassword> UserPassword { get; set; }
+        public virtual DbSet<Discounts> Discounts { get; set; }
+        public virtual DbSet<MenuItemCategories> MenuItemCategories { get; set; }
+        public virtual DbSet<MenuItems> MenuItems { get; set; }
+        public virtual DbSet<OrderMenuItems> OrderMenuItems { get; set; }
+        public virtual DbSet<OrderTaxes> OrderTaxes { get; set; }
+        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<Taxes> Taxes { get; set; }
+        public virtual DbSet<UserPasswords> UserPasswords { get; set; }
+        public virtual DbSet<UserRoles> UserRoles { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Discount>(entity =>
+            modelBuilder.HasAnnotation("Scaffolding:ConnectionString", "Data Source=(local);Initial Catalog=USAble_DB;Integrated Security=true");
+
+            modelBuilder.Entity<Discounts>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_Discount_Name")
+                entity.HasIndex(e => e.Name, "IX_Discounts_Name")
                     .IsUnique();
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(5, 2)");
@@ -46,18 +49,41 @@ namespace USAble_Data
                     .HasMaxLength(25);
 
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.DiscountCreatedByNavigation)
+                    .WithMany(p => p.DiscountsCreatedByNavigation)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.ModifiedByNavigation)
-                    .WithMany(p => p.DiscountModifiedByNavigation)
+                    .WithMany(p => p.DiscountsModifiedByNavigation)
                     .HasForeignKey(d => d.ModifiedBy);
             });
 
-            modelBuilder.Entity<MenuItem>(entity =>
+            modelBuilder.Entity<MenuItemCategories>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_MenuItem_Name")
+                entity.HasIndex(e => e.Name, "IX_MenuItemCategories_Name")
+                    .IsUnique();
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(25);
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.MenuItemCategoriesCreatedByNavigation)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.ModifiedByNavigation)
+                    .WithMany(p => p.MenuItemCategoriesModifiedByNavigation)
+                    .HasForeignKey(d => d.ModifiedBy);
+            });
+
+            modelBuilder.Entity<MenuItems>(entity =>
+            {
+                entity.HasIndex(e => e.Name, "IX_MenuItems_Name")
                     .IsUnique();
 
                 entity.Property(e => e.Cost).HasColumnType("smallmoney");
@@ -71,89 +97,68 @@ namespace USAble_Data
                     .HasMaxLength(25);
 
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.MenuItemCreatedByNavigation)
+                    .WithMany(p => p.MenuItemsCreatedByNavigation)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.MenuItemCategory)
-                    .WithMany(p => p.MenuItem)
+                    .WithMany(p => p.MenuItems)
                     .HasForeignKey(d => d.MenuItemCategoryId);
 
                 entity.HasOne(d => d.ModifiedByNavigation)
-                    .WithMany(p => p.MenuItemModifiedByNavigation)
+                    .WithMany(p => p.MenuItemsModifiedByNavigation)
                     .HasForeignKey(d => d.ModifiedBy);
             });
 
-            modelBuilder.Entity<MenuItemCategory>(entity =>
-            {
-                entity.HasIndex(e => e.Name, "IX_MenuItemCategory_Name")
-                    .IsUnique();
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(25);
-
-                entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.MenuItemCategoryCreatedByNavigation)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-
-                entity.HasOne(d => d.ModifiedByNavigation)
-                    .WithMany(p => p.MenuItemCategoryModifiedByNavigation)
-                    .HasForeignKey(d => d.ModifiedBy);
-            });
-
-            modelBuilder.Entity<Order>(entity =>
-            {
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.Order)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-
-                entity.HasOne(d => d.Discount)
-                    .WithMany(p => p.Order)
-                    .HasForeignKey(d => d.DiscountId);
-            });
-
-            modelBuilder.Entity<OrderMenuItem>(entity =>
+            modelBuilder.Entity<OrderMenuItems>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.MenuItemId });
 
                 entity.HasOne(d => d.MenuItem)
-                    .WithMany(p => p.OrderMenuItem)
+                    .WithMany(p => p.OrderMenuItems)
                     .HasForeignKey(d => d.MenuItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderMenuItem)
+                    .WithMany(p => p.OrderMenuItems)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<OrderTax>(entity =>
+            modelBuilder.Entity<OrderTaxes>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.TaxId });
 
                 entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderTax)
+                    .WithMany(p => p.OrderTaxes)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Tax)
-                    .WithMany(p => p.OrderTax)
+                    .WithMany(p => p.OrderTaxes)
                     .HasForeignKey(d => d.TaxId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<Tax>(entity =>
+            modelBuilder.Entity<Orders>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_Tax_Name")
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Discount)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.DiscountId);
+            });
+
+            modelBuilder.Entity<Taxes>(entity =>
+            {
+                entity.HasIndex(e => e.Name, "IX_Taxes_Name")
                     .IsUnique();
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(5, 2)");
@@ -167,18 +172,43 @@ namespace USAble_Data
                     .HasMaxLength(25);
 
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.TaxCreatedByNavigation)
+                    .WithMany(p => p.TaxesCreatedByNavigation)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.ModifiedByNavigation)
-                    .WithMany(p => p.TaxModifiedByNavigation)
+                    .WithMany(p => p.TaxesModifiedByNavigation)
                     .HasForeignKey(d => d.ModifiedBy);
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<UserPasswords>(entity =>
             {
-                entity.HasIndex(e => e.Username, "IX_User_Username")
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(72);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserPasswords)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<UserRoles>(entity =>
+            {
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(25);
+            });
+
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasIndex(e => e.Username, "IX_Users_Username")
                     .IsUnique();
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -199,30 +229,15 @@ namespace USAble_Data
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.InverseCreatedByNavigation)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .HasForeignKey(d => d.CreatedBy);
 
                 entity.HasOne(d => d.ModifiedByNavigation)
                     .WithMany(p => p.InverseModifiedByNavigation)
                     .HasForeignKey(d => d.ModifiedBy);
-            });
 
-            modelBuilder.Entity<UserPassword>(entity =>
-            {
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(60)
-                    .IsFixedLength(true);
-
-                entity.Property(e => e.Salt)
-                    .IsRequired()
-                    .HasMaxLength(1);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserPassword)
-                    .HasForeignKey(d => d.UserId)
+                entity.HasOne(d => d.UserRole)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.UserRoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 

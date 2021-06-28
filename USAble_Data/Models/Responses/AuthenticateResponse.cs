@@ -6,12 +6,20 @@ namespace USAble_Data.Models.Responses
 {
     public class AuthenticateResponse
     {
-        public User User { get; set; }
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserRole { get; set; }
         public string Token { get; set; }
 
-        public AuthenticateResponse(User user, string token)
+        public AuthenticateResponse(Users user, string userRole, string token)
         {
-            User = user;
+            Id = user.Id;
+            Username = user.Username;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            UserRole = userRole;
             Token = token;
         }
     }

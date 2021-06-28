@@ -6,15 +6,14 @@ using System.Collections.Generic;
 
 namespace USAble_Data
 {
-    public partial class UserPassword
+    public partial class UserPasswords
     {
         public int Id { get; set; }
         public string Password { get; set; }
-        public string Salt { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }
         public int UserId { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual Users User { get; set; }
     }
 }

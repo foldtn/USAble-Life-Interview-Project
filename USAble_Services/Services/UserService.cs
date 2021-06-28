@@ -12,15 +12,16 @@ using USAble_Data.Models.Responses;
 using USAble_Services.Interfaces;
 using System.Linq;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace USAble_Services.Services
 {
     public class UserService : IUserService
     {
-        private readonly _USAbleDbContext _dbContext;
+        private readonly _DBContext _dbContext;
         private readonly AppSettings _appSettings;
 
-        public UserService(_USAbleDbContext dbContext, IOptions<AppSettings> appSettings) 
+        public UserService(_DBContext dbContext, IOptions<AppSettings> appSettings) 
         {
             _dbContext = dbContext;
             _appSettings = appSettings.Value;
@@ -28,49 +29,141 @@ namespace USAble_Services.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var testSalt = "$2a$11$DC4eeBKj0imYslNZJPW/bu";
-            var testPassword = BC.HashPassword(model.Password, testSalt);
-
-            var user = _dbContext.User.SingleOrDefault(x => x.Username == model.Username);
+            var user = _dbContext.Users
+                .Include(x => x.UserPasswords)
+                .Include(x => x.UserRole)
+                .SingleOrDefault(x => x.Username == model.Username);
 
             if (user == null) return null;
 
-            var userPassword = user.UserPassword.SingleOrDefault(x => x.Active);
+            var userPassword = user.UserPasswords.SingleOrDefault(x => x.Active);
 
-            var passwordToAuth = BC.HashPassword(model.Password, userPassword.Salt);
-
-            if (!BC.Verify(userPassword.Password, passwordToAuth))
+            if (!BC.Verify(model.Password, userPassword.Password))
             {
                 return null;
             }
 
             // Verified password is a match for user, generate JWT Token
-            var token = generateJwtToken(user);
+            var token = GenerateJwtToken(user);
 
-            return new AuthenticateResponse(user, token);
+            var userRole = user.UserRole.Name;
+
+            return new AuthenticateResponse(user, userRole, token);
         }
 
-        public User GetById(int userId)
+        public Users GetById(int id)
         {
-            throw new NotImplementedException();
+            var user = _dbContext.Users.SingleOrDefault(x => x.Id == id);
+
+            return user;
         }
 
-        public List<User> GetAll()
+        public Users GetByUsername(string username)
         {
-            throw new NotImplementedException();
+            var user = _dbContext.Users.SingleOrDefault(x => x.Username == username);
+
+            return user;
         }
 
-        public User Update()
+        public List<Users> GetAll()
         {
-            throw new NotImplementedException();
+            var users = _dbContext.Users.ToList();
+
+            return users;
         }
 
-        public void Delete()
+        public UserResponse Create(Users user, UserPasswords password)
         {
-            throw new NotImplementedException();
+            var existingUser = GetByUsername(user.Username);
+
+            if (existingUser != null) return new UserResponse("Username already exists");
+
+            var newUser = new Users
+            {
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserRoleId = user.UserRoleId,
+                Active = true,
+                CreatedBy = user.CreatedBy,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            _dbContext.Users.Add(newUser);
+
+            var newPassword = new UserPasswords
+            {
+                Password = GetHashedPassword(password.Password),
+                CreatedDate = DateTime.UtcNow,
+                UserId = user.Id
+            };
+
+            _dbContext.UserPasswords.Add(newPassword);
+
+            _dbContext.SaveChanges();
+
+            return new UserResponse(newUser);
         }
 
-        private string generateJwtToken(User user)
+        public UserResponse Update(Users user, UserPasswords password = null)
+        {
+            var updatedUser = GetById(user.Id);
+
+            if (updatedUser == null) return new UserResponse("The user you're trying to update does not exist");
+
+            updatedUser.Username = user.Username;
+            updatedUser.FirstName = user.FirstName;
+            updatedUser.LastName = user.LastName;
+            updatedUser.ModifiedDate = DateTime.UtcNow;
+            updatedUser.ModifiedBy = user.ModifiedBy;
+
+            if (password != null)
+            {
+                var pastFivePasswords = _dbContext.UserPasswords
+                    .Where(x => x.UserId == user.Id)
+                    .OrderByDescending(x => x.CreatedDate)
+                    .Take(3);
+
+                var passwordUsed = pastFivePasswords.Any(x => PasswordCheck(password.Password, x.Password));
+
+                if (passwordUsed) return new UserResponse("New password must be different than the previous 3 passwords");
+
+                var newPassword = new UserPasswords
+                {
+                    Password = GetHashedPassword(password.Password),
+                    CreatedDate = DateTime.UtcNow,
+                    UserId = user.Id
+                };
+
+                _dbContext.UserPasswords.Add(newPassword);
+            }
+
+            _dbContext.SaveChanges();
+
+            return new UserResponse(updatedUser);
+        }
+
+        public UserResponse Delete(Users user)
+        {
+            var updatedUser = GetById(user.Id);
+
+            if (updatedUser == null) return new UserResponse("The user you're trying to delete does not exist");
+
+            updatedUser.Active = false;
+            updatedUser.ModifiedBy = user.ModifiedBy;
+            updatedUser.ModifiedDate = DateTime.UtcNow;
+
+            _dbContext.SaveChanges();
+
+            return new UserResponse(updatedUser);
+        }
+
+        private bool PasswordCheck(string password, string existingPassword)
+        {
+            return BC.Verify(password, existingPassword);
+        }
+
+        private string GenerateJwtToken(Users user)
         {
             // generate token that is valid for 12 hours
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -83,6 +176,12 @@ namespace USAble_Services.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        private string GetHashedPassword(string password)
+        {
+            var salt = BC.GenerateSalt();
+            return BC.HashPassword(password, salt);
         }
     }
 }

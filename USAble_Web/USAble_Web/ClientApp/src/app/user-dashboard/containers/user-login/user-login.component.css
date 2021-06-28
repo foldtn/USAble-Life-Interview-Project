@@ -3,6 +3,9 @@
 }
 
 .error {
-  text-align: center;
   color: red;
+}
+
+.loginError{
+  text-align: center;
 }

@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using USAble_Data;
+using USAble_Data.Models.Responses;
 
 namespace USAble_Services.Interfaces
 {
     public interface IMenuItemService
     {
-        public MenuItem Get();
-        public List<MenuItem> GetAll(); // Add Pagenation
-        public MenuItem Update();
-        public void Delete();
+        public MenuItems GetById(int id);
+        public MenuItems GetByName(string name);
+        public List<MenuItems> GetAll(); // Add Pagenation
+        public MenuItemResponse Create(MenuItems discount);
+        public MenuItemResponse Update(MenuItems menuItem);
+        public MenuItemResponse Delete(MenuItems menuItem);
     }
 }

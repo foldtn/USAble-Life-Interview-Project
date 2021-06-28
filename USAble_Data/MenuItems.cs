@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace USAble_Data
 {
-    public partial class MenuItem
+    public partial class MenuItems
     {
-        public MenuItem()
+        public MenuItems()
         {
-            OrderMenuItem = new HashSet<OrderMenuItem>();
+            OrderMenuItems = new HashSet<OrderMenuItems>();
         }
 
         public int Id { get; set; }
@@ -23,9 +23,9 @@ namespace USAble_Data
         public int? ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        public virtual User CreatedByNavigation { get; set; }
-        public virtual MenuItemCategory MenuItemCategory { get; set; }
-        public virtual User ModifiedByNavigation { get; set; }
-        public virtual ICollection<OrderMenuItem> OrderMenuItem { get; set; }
+        public virtual Users CreatedByNavigation { get; set; }
+        public virtual MenuItemCategories MenuItemCategory { get; set; }
+        public virtual Users ModifiedByNavigation { get; set; }
+        public virtual ICollection<OrderMenuItems> OrderMenuItems { get; set; }
     }
 }

@@ -14,39 +14,43 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[Discount]",
+         "Name": "[dbo].[Discounts]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MenuItem]",
+         "Name": "[dbo].[MenuItemCategories]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MenuItemCategory]",
+         "Name": "[dbo].[MenuItems]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Order]",
+         "Name": "[dbo].[OrderMenuItems]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[OrderMenuItem]",
+         "Name": "[dbo].[Orders]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[OrderTax]",
+         "Name": "[dbo].[OrderTaxes]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Tax]",
+         "Name": "[dbo].[Taxes]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[User]",
+         "Name": "[dbo].[UserPasswords]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UserPassword]",
+         "Name": "[dbo].[UserRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
          "ObjectType": 0
       }
    ],

@@ -6,25 +6,24 @@ using System.Collections.Generic;
 
 namespace USAble_Data
 {
-    public partial class Discount
+    public partial class Taxes
     {
-        public Discount()
+        public Taxes()
         {
-            Order = new HashSet<Order>();
+            OrderTaxes = new HashSet<OrderTaxes>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Amount { get; set; }
-        public bool DiscountType { get; set; }
         public bool Active { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public int? ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        public virtual User CreatedByNavigation { get; set; }
-        public virtual User ModifiedByNavigation { get; set; }
-        public virtual ICollection<Order> Order { get; set; }
+        public virtual Users CreatedByNavigation { get; set; }
+        public virtual Users ModifiedByNavigation { get; set; }
+        public virtual ICollection<OrderTaxes> OrderTaxes { get; set; }
     }
 }

@@ -1,8 +1,0 @@
-﻿CREATE TABLE [dbo].[UserType]
-(
-	[Id] INT NOT NULL IDENTITY PRIMARY KEY,
-	[Name] NVARCHAR(25) NOT NULL,
-	[Active] BIT NOT NULL,
-	[CreatedDate] DATETIME NOT NULL,
-	[ModifiedDate] DATETIME
-)

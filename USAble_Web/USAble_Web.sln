@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USAble_Services", "..\USAbl
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "USAble_DB", "..\USAble_DB\USAble_DB.sqlproj", "{D77628A3-D879-4D96-8A6E-82BA642B9779}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USAble_UnitTests", "..\USAble_UnitTests\USAble_UnitTests.csproj", "{F273968B-3230-413A-89DA-5F52C7E7AEFF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "USAble_Web", "USAble_Web\USAble_Web.csproj", "{028BCAC4-CC44-42F6-B575-4E46135A1195}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USAble_Web", "USAble_Web\USAble_Web.csproj", "{028BCAC4-CC44-42F6-B575-4E46135A1195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +31,6 @@ Global
 		{D77628A3-D879-4D96-8A6E-82BA642B9779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D77628A3-D879-4D96-8A6E-82BA642B9779}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D77628A3-D879-4D96-8A6E-82BA642B9779}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{F273968B-3230-413A-89DA-5F52C7E7AEFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F273968B-3230-413A-89DA-5F52C7E7AEFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F273968B-3230-413A-89DA-5F52C7E7AEFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F273968B-3230-413A-89DA-5F52C7E7AEFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{028BCAC4-CC44-42F6-B575-4E46135A1195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{028BCAC4-CC44-42F6-B575-4E46135A1195}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{028BCAC4-CC44-42F6-B575-4E46135A1195}.Release|Any CPU.ActiveCfg = Release|Any CPU

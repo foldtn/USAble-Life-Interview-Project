@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace USAble_Data
 {
-    public partial class OrderTax
+    public partial class OrderTaxes
     {
         public int OrderId { get; set; }
         public int TaxId { get; set; }
 
-        public virtual Order Order { get; set; }
-        public virtual Tax Tax { get; set; }
+        public virtual Orders Order { get; set; }
+        public virtual Taxes Tax { get; set; }
     }
 }

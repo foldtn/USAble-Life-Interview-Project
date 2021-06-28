@@ -37,7 +37,7 @@ namespace USAble_Web
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // configure dbContext
-            services.AddDbContext<_USAbleDbContext>(options =>
+            services.AddDbContext<_DBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // configure DI for application services

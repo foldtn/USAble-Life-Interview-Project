@@ -60,20 +60,25 @@
     <Folder Include="Scripts" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\Discount.sql" />
-    <Build Include="Tables\MenuItem.sql" />
-    <Build Include="Tables\MenuItemCategory.sql" />
-    <Build Include="Tables\UserType.sql" />
+    <Build Include="Tables\Discounts.sql" />
+    <Build Include="Tables\MenuItems.sql" />
+    <Build Include="Tables\MenuItemCategories.sql" />
+    <Build Include="Tables\UserRoles.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Tables\Order.sql" />
-    <Build Include="Tables\OrderMenuItem.sql" />
-    <Build Include="Tables\OrderTax.sql" />
-    <Build Include="Tables\Tax.sql" />
-    <Build Include="Tables\User.sql" />
-    <Build Include="Tables\UserPassword.sql" />
+    <Build Include="Tables\Orders.sql" />
+    <Build Include="Tables\OrderMenuItems.sql" />
+    <Build Include="Tables\OrderTaxes.sql" />
+    <Build Include="Tables\Taxes.sql" />
+    <Build Include="Tables\Users.sql" />
+    <Build Include="Tables\UserPasswords.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\InitializeDB.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\CleanseDB.sql" />
+    <None Include="Scripts\CheckAllTables.sql" />
+    <None Include="USAble_DB.publish.xml" />
   </ItemGroup>
 </Project>

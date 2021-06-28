@@ -17,13 +17,14 @@ import { UserFormComponent } from './components/user-form/user-form.component';
 import { UserDashboardService } from './user-dashboard.service';
 
 import { AuthGuard } from '../helpers/auth.guard';
+import { Role } from '../models/role.enum';
 
 const routes: Routes = [
   {
     path: 'users',
     children: [
-      { path: '', component: UserDashboardComponent, canActivate: [AuthGuard] },
-      { path: ':id', component: UserViewerComponent, canActivate: [AuthGuard] },
+      { path: '', component: UserDashboardComponent, canActivate: [AuthGuard], data: { roles: [Role.Manager]} },
+      { path: ':id', component: UserViewerComponent, canActivate: [AuthGuard], data: { roles: [Role.Manager]} },
     ]
   },
   { path: 'login', component: UserLoginComponent },

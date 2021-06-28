@@ -2,6 +2,7 @@
 (	
 	[Id] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	[DiscountId] INT,
+	[Total] DECIMAL NOT NULL,
 	[CreatedBy] INT NOT NULL,
 	[CreatedDate] DATETIME NOT NULL,
 	FOREIGN KEY (DiscountId) REFERENCES [dbo].[Discounts](Id),
