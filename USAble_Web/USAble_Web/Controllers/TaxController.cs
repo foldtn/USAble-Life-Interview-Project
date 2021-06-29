@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using USAble_Data;
 using USAble_Data.Models.Dtos;
+using USAble_Services.Extensions;
 using USAble_Services.Interfaces;
 using USAble_Web.Helpers;
 
@@ -11,7 +12,7 @@ namespace USAble_Web.Controllers
     [ApiController]
     public class TaxController : ControllerBase
     {
-        private ITaxService _taxService;
+        private readonly ITaxService _taxService;
 
         public TaxController(ITaxService taxService)
         {
@@ -24,7 +25,7 @@ namespace USAble_Web.Controllers
         {
             var tax = _taxService.GetById(id);
             var taxDto = new TaxDto(tax);
-            return Ok(taxDto);
+            return Ok(taxDto.ConvertToJsonObject());
         }
 
         [Authorize]
@@ -40,7 +41,7 @@ namespace USAble_Web.Controllers
                 taxesDto.Add(new TaxDto(tax));
             }
 
-            return Ok(taxesDto);
+            return Ok(taxesDto.ConvertToJsonObject());
         }
 
         [Authorize]
@@ -52,7 +53,9 @@ namespace USAble_Web.Controllers
             if (response.errorMessage != null)
                 return BadRequest(new { message = response.errorMessage });
 
-            return Ok(response.tax);
+            var taxDto = new TaxDto(response.tax);
+
+            return Ok(taxDto.ConvertToJsonObject()); ;
         }
 
         [Authorize]
@@ -64,7 +67,9 @@ namespace USAble_Web.Controllers
             if (response.errorMessage != null)
                 return BadRequest(new { message = response.errorMessage });
 
-            return Ok(response.tax);
+            var taxDto = new TaxDto(response.tax);
+
+            return Ok(taxDto.ConvertToJsonObject());
         }
 
         [Authorize]

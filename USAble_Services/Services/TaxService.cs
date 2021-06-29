@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using USAble_Data;
-using USAble_Data.Models.Dtos;
 using USAble_Data.Models.Responses;
 using USAble_Services.Interfaces;
 
@@ -70,18 +69,42 @@ namespace USAble_Services.Services
 
         public TaxResponse Update(Taxes tax)
         {
-            var updatedTax = GetById(tax.Id);
+            var taxToUpdate = GetById(tax.Id);
 
-            if (updatedTax == null) return new TaxResponse($"The tax you're trying to update does not exist");
+            if (taxToUpdate == null) return new TaxResponse($"The tax you're trying to update does not exist");
 
-            updatedTax.Name = tax.Name;
-            updatedTax.Amount = tax.Amount;
-            updatedTax.ModifiedBy = tax.ModifiedBy;
-            updatedTax.ModifiedDate = DateTime.UtcNow;
+            var existingTax = GetByName(tax.Name);
+
+            if (existingTax != null)
+            {
+                if (existingTax.Active)
+                {
+                    return new TaxResponse($"{tax.Name} already exists");
+                }
+                else
+                {
+                    // Reactivate tax item with amount user wanted to create with
+                    existingTax.Active = true;
+                    existingTax.Amount = tax.Amount;
+                    existingTax.ModifiedBy = tax.ModifiedBy;
+                    existingTax.ModifiedDate = DateTime.UtcNow;
+
+                    taxToUpdate.Active = false;
+                    taxToUpdate.ModifiedBy = tax.ModifiedBy;
+                    taxToUpdate.ModifiedDate = DateTime.UtcNow;
+                }
+            }
+            else
+            {
+                taxToUpdate.Name = tax.Name;
+                taxToUpdate.Amount = tax.Amount;
+                taxToUpdate.ModifiedBy = tax.ModifiedBy;
+                taxToUpdate.ModifiedDate = DateTime.UtcNow;
+            }
 
             _dbContext.SaveChanges();
 
-            return new TaxResponse(updatedTax);
+            return new TaxResponse(existingTax == null ? taxToUpdate : existingTax);
         }
 
         public TaxResponse Delete(Taxes tax)
