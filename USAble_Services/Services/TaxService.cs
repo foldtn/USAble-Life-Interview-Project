@@ -40,7 +40,7 @@ namespace USAble_Services.Services
             {
                 if (existingTax.Active) 
                 {
-                    return new TaxResponse($"{tax.Name} already exists");
+                    return new TaxResponse(tax, $"{tax.Name} already exists");
                 }
                 else
                 {
@@ -79,7 +79,7 @@ namespace USAble_Services.Services
             {
                 if (existingTax.Active)
                 {
-                    return new TaxResponse($"{tax.Name} already exists");
+                    return new TaxResponse(tax, $"{tax.Name} already exists");
                 }
                 else
                 {

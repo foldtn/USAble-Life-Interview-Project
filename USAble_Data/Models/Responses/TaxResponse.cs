@@ -14,5 +14,11 @@
         {
             this.errorMessage = errorMessage;
         }
+
+        public TaxResponse(Taxes tax, string errorMessage)
+        {
+            this.tax = tax;
+            this.errorMessage = errorMessage;
+        }
     }
 }

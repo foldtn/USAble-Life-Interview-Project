@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Tax } from './models/tax.interface';
+import { ApiResponse } from '../models/api-response.interface';
 
 @Injectable()
 export class TaxDashboardService {
@@ -15,24 +16,24 @@ export class TaxDashboardService {
     this.baseUrl = baseUrl;
   }
 
-  getTaxes(): Observable<Tax[]> {
-    return this.http.get<Tax[]>(`${this.baseUrl}api/tax/getall`);
+  getTaxes(): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${this.baseUrl}api/tax/getall`);
   }
 
-  createTax(tax: Tax): Observable<Tax> {
-    return this.http.post<Tax>(`${this.baseUrl}api/tax/create`, tax)
+  createTax(tax: Tax): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.baseUrl}api/tax/create`, tax)
   }
 
-  updateTax(tax: Tax): Observable<Tax> {
-    return this.http.post<Tax>(`${this.baseUrl}api/tax/update`, tax)
+  updateTax(tax: Tax): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.baseUrl}api/tax/update`, tax)
   }
 
-  deleteTax(tax: Tax): Observable<any> {
-    return this.http.post(`${this.baseUrl}api/tax/delete`, tax)
+  deleteTax(tax: Tax): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.baseUrl}api/tax/delete`, tax)
   }
 
-  getTaxById(id: number): Observable<Tax> {
-    return this.http.get<Tax>(`${this.baseUrl}api/tax/getbyid`, {
+  getTaxById(id: number): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${this.baseUrl}api/tax/getbyid`, {
       params: new HttpParams().set('id', String(id))
     });
   }

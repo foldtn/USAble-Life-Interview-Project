@@ -1,8 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Tax } from '../../models/tax.interface';
+import { ApiResponse } from '../../../models/api-response.interface';
 
 import { HelperService } from '../../../services/helper.service';
 
@@ -33,9 +34,7 @@ export class TaxFormComponent {
     });
 
     modalRef.result.then((result: Tax) => {
-      console.log(result);
       this.tax = result;
-      console.log(this.tax);
       this.create.emit(result);
       },(reason) => {
       console.log(reason);

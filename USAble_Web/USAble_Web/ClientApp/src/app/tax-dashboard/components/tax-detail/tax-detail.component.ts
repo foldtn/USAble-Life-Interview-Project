@@ -1,6 +1,7 @@
 import {Component, OnChanges, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 import { Tax } from '../../models/tax.interface';
+import { ApiResponse } from '../../../models/api-response.interface';
 
 import { HelperService } from '../../../services/helper.service';
 
@@ -13,6 +14,9 @@ export class TaxDetailComponent implements OnChanges {
   @Input()
   detail: Tax;
 
+  @Input()
+  response: ApiResponse;
+
   @Output()
   update: EventEmitter<Tax> = new EventEmitter<Tax>();
 
@@ -24,6 +28,10 @@ export class TaxDetailComponent implements OnChanges {
   taxAmountError: string;
   tempName: string;
   tempAmount: number;
+  revertName: string;
+  revertAmount: number;
+  failedAlertMessage: string;
+  failedAlert: boolean = false;
 
   constructor(private helperService: HelperService) {}
 
@@ -34,14 +42,31 @@ export class TaxDetailComponent implements OnChanges {
       this.tempAmount = this.detail.Amount;
     }
 
-    if (changes.nameExists) {
-      const tempTax = changes.nameExists.currentValue;
+    if (changes.response) {
+      const response = Object.assign({}, changes.response.currentValue);
+      if (response.success !== undefined) {
+        if(response.success){
+          if (this.tempName !== undefined) {
+            this.detail.Name = this.tempName;
+            this.tempName = undefined;
+          }
 
-      if (tempTax !== undefined && tempTax.Id !== this.detail.Id) {
-        this.taxNameError = 'Tax name already exists';
-      }
-      else {
-        this.taxNameError = undefined;
+          if (this.tempAmount !== undefined) {
+            this.detail.Amount = this.tempAmount;
+            this.tempAmount = undefined;
+          }
+          this.editing = false;
+        } else if (response.payload.Id === this.detail.Id) {
+          this.detail.Name = this.revertName;
+          this.detail.Amount = this.revertAmount;
+          this.revertName = undefined;
+          this.revertAmount = undefined;
+
+          this.editing = true;
+
+          this.failedAlertMessage = response.error;
+          this.failedAlert = true;
+        }
       }
     }
   }
@@ -55,12 +80,18 @@ export class TaxDetailComponent implements OnChanges {
       this.tempName = value;
       this.taxNameError = undefined;
     }
+
+    this.closeFailedAlert();
   }
 
   onAmountChange(value: number) {
     // throw required validation error
     if (value === undefined || value === null) {
       this.taxAmountError = 'Tax Amount is Required'
+    }
+    // throw validation error if outside of 0 - 100 number range
+    else if (value < 0.5 || 100 < value) {
+      this.taxAmountError = 'Not within range (0.5-100)'
     }
     // throw validation error if a decimal
     else if (!this.helperService.hasTwoDecimals(value)) {
@@ -70,6 +101,8 @@ export class TaxDetailComponent implements OnChanges {
       this.tempAmount = value;
       this.taxAmountError = undefined;
     }
+
+    this.closeFailedAlert();
   }
 
   onDelete() {
@@ -79,24 +112,33 @@ export class TaxDetailComponent implements OnChanges {
   undoChanges() {
     this.taxNameError = undefined;
     this.taxAmountError = undefined;
+    this.revertName = undefined;
+    this.revertAmount = undefined;
     this.editing = false;
+
+    this.closeFailedAlert();
   }
 
   toggleEdit() {
     if (this.editing) {
       if (this.tempName !== undefined) {
+        this.revertName = this.detail.Name;
         this.detail.Name = this.tempName;
-        this.tempName = undefined;
       }
 
       if (this.tempAmount !== undefined) {
+        this.revertAmount = this.detail.Amount;
         this.detail.Amount = this.tempAmount;
-        this.tempAmount = undefined;
       }
 
       this.update.emit(this.detail);
     }
 
     this.editing = !this.editing;
+  }
+
+  closeFailedAlert() {
+    this.failedAlert = false;
+    this.failedAlertMessage = undefined;
   }
 }
