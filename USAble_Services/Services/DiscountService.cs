@@ -28,7 +28,7 @@ namespace USAble_Services.Services
 
         public List<Discounts> GetAll()
         {
-            return _dbContext.Discounts.ToList();
+            return _dbContext.Discounts.Where(x => x.Active).ToList();
         }
 
         public DiscountResponse Create(Discounts discount)
@@ -40,7 +40,7 @@ namespace USAble_Services.Services
             {
                 if (existingDiscount.Active)
                 {
-                    return new DiscountResponse($"{discount.Name} already exists");
+                    return new DiscountResponse(discount, $"{discount.Name} already exists");
                 }
                 else
                 {
@@ -64,23 +64,47 @@ namespace USAble_Services.Services
 
             _dbContext.SaveChanges();
 
-            return new DiscountResponse(newDiscount);
+            return new DiscountResponse(existingDiscount == null ? newDiscount : existingDiscount);
         }
 
         public DiscountResponse Update(Discounts discount)
         {
-            var updatedDiscount = GetById(discount.Id);
+            var discountToUpdate = GetById(discount.Id);
 
-            if (updatedDiscount == null) return new DiscountResponse($"The discount you're trying to update does not exist");
+            if (discountToUpdate == null) return new DiscountResponse($"The discount you're trying to update does not exist");
 
-            updatedDiscount.Name = discount.Name;
-            updatedDiscount.Amount = discount.Amount;
-            updatedDiscount.ModifiedBy = discount.ModifiedBy;
-            updatedDiscount.ModifiedDate = DateTime.UtcNow;
+            var existingDiscount = GetByName(discount.Name);
+
+            if (existingDiscount != null && existingDiscount.Id != discountToUpdate.Id)
+            {
+                if (existingDiscount.Active)
+                {
+                    return new DiscountResponse(discount, $"{discount.Name} already exists");
+                }
+                else
+                {
+                    // Reactivate discount item with amount user wanted to create with
+                    existingDiscount.Active = true;
+                    existingDiscount.Amount = discount.Amount;
+                    existingDiscount.ModifiedBy = discount.ModifiedBy;
+                    existingDiscount.ModifiedDate = DateTime.UtcNow;
+
+                    discountToUpdate.Active = false;
+                    discountToUpdate.ModifiedBy = discount.ModifiedBy;
+                    discountToUpdate.ModifiedDate = DateTime.UtcNow;
+                }
+            }
+            else
+            {
+                discountToUpdate.Name = discount.Name;
+                discountToUpdate.Amount = discount.Amount;
+                discountToUpdate.ModifiedBy = discount.ModifiedBy;
+                discountToUpdate.ModifiedDate = DateTime.UtcNow;
+            }
 
             _dbContext.SaveChanges();
 
-            return new DiscountResponse(updatedDiscount);
+            return new DiscountResponse(existingDiscount == null ? discountToUpdate : existingDiscount);
         }
 
         public DiscountResponse Delete(Discounts discount)

@@ -1,4 +1,4 @@
-import {Component, OnChanges, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 
 import { Tax } from '../../models/tax.interface';
 import { ApiResponse } from '../../../models/api-response.interface';
@@ -24,8 +24,8 @@ export class TaxDetailComponent implements OnChanges {
   delete: EventEmitter<Tax> = new EventEmitter<Tax>();
 
   editing: boolean = false;
-  taxNameError: string;
-  taxAmountError: string;
+  nameError: string;
+  amountError: string;
   tempName: string;
   tempAmount: number;
   revertName: string;
@@ -48,17 +48,19 @@ export class TaxDetailComponent implements OnChanges {
         if(response.success){
           if (this.tempName !== undefined) {
             this.detail.Name = this.tempName;
-            this.tempName = undefined;
           }
 
           if (this.tempAmount !== undefined) {
             this.detail.Amount = this.tempAmount;
-            this.tempAmount = undefined;
           }
           this.editing = false;
         } else if (response.payload.Id === this.detail.Id) {
           this.detail.Name = this.revertName;
           this.detail.Amount = this.revertAmount;
+
+          this.tempName = this.detail.Name;
+          this.tempAmount = this.detail.Amount;
+
           this.revertName = undefined;
           this.revertAmount = undefined;
 
@@ -74,11 +76,11 @@ export class TaxDetailComponent implements OnChanges {
   onNameChange(value: string) {
     // check if name is already exists
     if (value === undefined || value === null || value === '') {
-      this.taxNameError = 'Tax Name is Required';
+      this.nameError = 'Tax Name is Required';
     }
     else {
       this.tempName = value;
-      this.taxNameError = undefined;
+      this.nameError = undefined;
     }
 
     this.closeFailedAlert();
@@ -87,19 +89,19 @@ export class TaxDetailComponent implements OnChanges {
   onAmountChange(value: number) {
     // throw required validation error
     if (value === undefined || value === null) {
-      this.taxAmountError = 'Tax Amount is Required'
+      this.amountError = 'Tax Amount is Required'
     }
     // throw validation error if outside of 0 - 100 number range
     else if (value < 0.5 || 100 < value) {
-      this.taxAmountError = 'Not within range (0.5-100)'
+      this.amountError = 'Not within range (0.5-100)'
     }
     // throw validation error if a decimal
     else if (!this.helperService.hasTwoDecimals(value)) {
-      this.taxAmountError = 'Only 2 decimal places allowed'
+      this.amountError = 'Only 2 decimal places allowed'
     }
     else {
       this.tempAmount = value;
-      this.taxAmountError = undefined;
+      this.amountError = undefined;
     }
 
     this.closeFailedAlert();
@@ -110,8 +112,8 @@ export class TaxDetailComponent implements OnChanges {
   }
 
   undoChanges() {
-    this.taxNameError = undefined;
-    this.taxAmountError = undefined;
+    this.nameError = undefined;
+    this.amountError = undefined;
     this.revertName = undefined;
     this.revertAmount = undefined;
     this.editing = false;
@@ -140,5 +142,10 @@ export class TaxDetailComponent implements OnChanges {
   closeFailedAlert() {
     this.failedAlert = false;
     this.failedAlertMessage = undefined;
+  }
+
+  disableSubmit() {
+    return (this.nameError || this.amountError) ||
+      (this.tempName === this.detail.Name && this.tempAmount === this.detail.Amount)
   }
 }

@@ -14,5 +14,11 @@
         {
             this.errorMessage = errorMessage;
         }
+
+        public MenuItemResponse(MenuItems menuItem, string errorMessage)
+        {
+            this.menuItem = menuItem;
+            this.errorMessage = errorMessage;
+        }
     }
 }

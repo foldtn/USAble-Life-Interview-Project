@@ -28,7 +28,7 @@ namespace USAble_Services.Services
 
         public List<MenuItems> GetAll()
         {
-            return _dbContext.MenuItems.ToList();
+            return _dbContext.MenuItems.Where(x => x.Active).ToList();
         }
 
         public MenuItemResponse Create(MenuItems menuItem)
@@ -40,7 +40,7 @@ namespace USAble_Services.Services
             {
                 if (existingMenuItem.Active)
                 {
-                    return new MenuItemResponse($"{menuItem.Name} already exists");
+                    return new MenuItemResponse(menuItem, $"{menuItem.Name} already exists");
                 }
                 else
                 {
@@ -66,24 +66,49 @@ namespace USAble_Services.Services
 
             _dbContext.SaveChanges();
 
-            return new MenuItemResponse((existingMenuItem != null) ? existingMenuItem : newMenuItem);
+            return new MenuItemResponse(existingMenuItem != null ? existingMenuItem : newMenuItem);
         }
 
         public MenuItemResponse Update(MenuItems menuItem)
         {
-            var updatedMenuItem = GetById(menuItem.Id);
+            var menuItemToUpdate = GetById(menuItem.Id);
 
-            if (updatedMenuItem == null) return new MenuItemResponse($"The tax you're trying to update does not exist");
+            if (menuItemToUpdate == null) return new MenuItemResponse($"The menu item you're trying to update does not exist");
 
-            updatedMenuItem.Name = menuItem.Name;
-            updatedMenuItem.Cost = menuItem.Cost;
-            updatedMenuItem.MenuItemCategoryId = menuItem.MenuItemCategoryId;
-            updatedMenuItem.ModifiedBy = menuItem.ModifiedBy;
-            updatedMenuItem.ModifiedDate = DateTime.UtcNow;
+            var existingMenuItem = GetByName(menuItem.Name);
+
+            if (existingMenuItem != null && existingMenuItem.Id != menuItemToUpdate.Id)
+            {
+                if (existingMenuItem.Active)
+                {
+                    return new MenuItemResponse(menuItem, $"{menuItem.Name} already exists");
+                }
+                else
+                {
+                    // Reactivate tax item with amount user wanted to create with
+                    existingMenuItem.Active = true;
+                    existingMenuItem.Cost = menuItem.Cost;
+                    existingMenuItem.MenuItemCategoryId = menuItem.MenuItemCategoryId;
+                    existingMenuItem.ModifiedBy = menuItem.ModifiedBy;
+                    existingMenuItem.ModifiedDate = DateTime.UtcNow;
+
+                    menuItemToUpdate.Active = false;
+                    menuItemToUpdate.ModifiedBy = menuItem.ModifiedBy;
+                    menuItemToUpdate.ModifiedDate = DateTime.UtcNow;
+                }
+            }
+            else
+            {
+                menuItemToUpdate.Name = menuItem.Name;
+                menuItemToUpdate.Cost = menuItem.Cost;
+                menuItemToUpdate.MenuItemCategoryId = menuItem.MenuItemCategoryId;
+                menuItemToUpdate.ModifiedBy = menuItem.ModifiedBy;
+                menuItemToUpdate.ModifiedDate = DateTime.UtcNow;
+            }
 
             _dbContext.SaveChanges();
 
-            return new MenuItemResponse(updatedMenuItem);
+            return new MenuItemResponse(existingMenuItem == null ? menuItemToUpdate : existingMenuItem);
         }
 
         public MenuItemResponse Delete(MenuItems menuItem)

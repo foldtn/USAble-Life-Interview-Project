@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { TaxDashboardService } from '../../tax-dashboard.service';
 import { AuthenticationService } from '../../../services/authentication.service';
@@ -12,29 +12,32 @@ import { ApiResponse } from '../../../models/api-response.interface';
   selector: 'app-tax-dashboard',
   styleUrls: ['tax-dashboard.component.css'],
   template: `
-    <div>
-      <div class="text-center">
-        <h3>Taxes</h3>
+    <div class="text-center">
+      <h1>Taxes</h1>
+    </div>
+    <app-tax-form (create)="handleCreate($event)"></app-tax-form>
+    <div class="col-sm-6 offset-sm-3 mt-2">
+      <div *ngIf="successAlert" class="alert alert-success alert-dismissible">
+        <a class="close" data-dismiss="alert" aria-label="close" (click)="closeSuccessAlert()">&times;</a>
+        The tax was created successfully.
       </div>
-      <app-tax-form (create)="handleCreate($event)"></app-tax-form>
-      <div class="col-sm-6 offset-sm-3 mt-2">
-        <div *ngIf="successAlert" class="alert alert-success alert-dismissible">
-          <a class="close" data-dismiss="alert" aria-label="close" (click)="closeSuccessAlert()">&times;</a>
-          The tax was created successfully.
-        </div>
-        <div *ngIf="failedAlert" class="alert alert-danger alert-dismissible">
-          <a class="close" data-dismiss="alert" aria-label="close" (click)="closeFailedAlert()">&times;</a>
-          {{ failedMessage }}
+      <div *ngIf="failedAlert" class="alert alert-danger alert-dismissible">
+        <a class="close" data-dismiss="alert" aria-label="close" (click)="closeFailedAlert()">&times;</a>
+        {{ failedMessage }}
+      </div>
+    </div>
+    <div class="col-md-10 offset-md-1 mt-4">
+      <div class="row">
+        <div class="col-sm-3 mt-4" *ngFor="let tax of taxes;">
+          <app-tax-details
+            [detail]="tax"
+            [response]="taxResponse"
+            (update)="handleUpdate($event)"
+            (delete)="handleDelete($event)"
+          >
+          </app-tax-details>
         </div>
       </div>
-      <app-tax-details
-        *ngFor="let tax of taxes;"
-        [detail]="tax"
-        [response]="taxResponse"
-        (update)="handleUpdate($event)"
-        (delete)="handleDelete($event)"
-      >
-      </app-tax-details>
     </div>
   `
 })

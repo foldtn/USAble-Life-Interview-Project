@@ -28,7 +28,7 @@ namespace USAble_Services.Services
 
         public List<MenuItemCategories> GetAll()
         {
-            return _dbContext.MenuItemCategories.ToList(); 
+            return _dbContext.MenuItemCategories.Where(x => x.Active).ToList(); 
         }
 
         public MenuItemCategoryResponse Create(MenuItemCategories category)
@@ -40,7 +40,7 @@ namespace USAble_Services.Services
             {
                 if (existingCategory.Active)
                 {
-                    return new MenuItemCategoryResponse($"{category.Name} already exists");
+                    return new MenuItemCategoryResponse(category, $"{category.Name} already exists");
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace USAble_Services.Services
                 newCategory.CreatedBy = category.CreatedBy;
                 newCategory.CreatedDate = DateTime.UtcNow;
 
-                _dbContext.MenuItemCategories.Add(newCategory);
+                _dbContext.MenuItemCategories.Add(existingCategory == null ? newCategory : existingCategory);
             }
 
             _dbContext.SaveChanges();
@@ -67,17 +67,40 @@ namespace USAble_Services.Services
 
         public MenuItemCategoryResponse Update(MenuItemCategories category)
         {
-            var updatedCategory = GetById(category.Id);
+            var categoryToUpdate = GetById(category.Id);
 
-            if (updatedCategory == null) return new MenuItemCategoryResponse("The menu item category you're trying to update does not exist");
-            
-            updatedCategory.Name = category.Name;
-            updatedCategory.ModifiedBy = category.ModifiedBy;
-            updatedCategory.ModifiedDate = DateTime.UtcNow;
+            if (categoryToUpdate == null) return new MenuItemCategoryResponse($"The category you're trying to update does not exist");
+
+            var existingCategory = GetByName(category.Name);
+
+            if (existingCategory != null && existingCategory.Id != categoryToUpdate.Id)
+            {
+                if (existingCategory.Active)
+                {
+                    return new MenuItemCategoryResponse(category, $"{category.Name} already exists");
+                }
+                else
+                {
+                    // Reactivate category item with amount user wanted to create with
+                    existingCategory.Active = true;
+                    existingCategory.ModifiedBy = category.ModifiedBy;
+                    existingCategory.ModifiedDate = DateTime.UtcNow;
+
+                    categoryToUpdate.Active = false;
+                    categoryToUpdate.ModifiedBy = category.ModifiedBy;
+                    categoryToUpdate.ModifiedDate = DateTime.UtcNow;
+                }
+            }
+            else
+            {
+                categoryToUpdate.Name = category.Name;
+                categoryToUpdate.ModifiedBy = category.ModifiedBy;
+                categoryToUpdate.ModifiedDate = DateTime.UtcNow;
+            }
 
             _dbContext.SaveChanges();
 
-            return new MenuItemCategoryResponse(updatedCategory);
+            return new MenuItemCategoryResponse(existingCategory == null ? categoryToUpdate : existingCategory);
         }
 
         public MenuItemCategoryResponse Delete(MenuItemCategories category)

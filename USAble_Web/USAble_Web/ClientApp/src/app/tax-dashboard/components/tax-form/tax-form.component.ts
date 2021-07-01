@@ -1,9 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Tax } from '../../models/tax.interface';
-import { ApiResponse } from '../../../models/api-response.interface';
 
 import { HelperService } from '../../../services/helper.service';
 
@@ -12,7 +10,7 @@ import { HelperService } from '../../../services/helper.service';
   styleUrls: ['tax-form.component.css'],
   template: `
     <div class="d-flex justify-content-center">
-      <button type="button" class="btn btn-success btn-sm" (click)="open()">Create New Tax</button>
+      <button type="button" class="btn btn-success btn-lg" (click)="open()">Create New Tax</button>
     </div>
   `
 })
@@ -50,8 +48,8 @@ export class TaxFormComponent {
 })
 export class TaxFormModalContent implements OnInit {
   decimalPattern: string;
-  taxNameError: string;
-  taxAmountError: string;
+  nameError: string;
+  amountError: string;
   tempName: string;
   tempAmount: number;
 
@@ -65,28 +63,32 @@ export class TaxFormModalContent implements OnInit {
   }
 
   onNameChange(value: string) {
-    // check if name is already exists
+    // check if name already exists
     if (value === undefined || value === null || value === '') {
-      this.taxNameError = 'Tax Name is Required';
+      this.nameError = 'Tax Name is Required';
     }
     else {
       this.tempName = value;
-      this.taxNameError = undefined;
+      this.nameError = undefined;
     }
   }
 
   onAmountChange(value: number) {
     // throw required validation error
     if (value === undefined || value === null) {
-      this.taxAmountError = 'Tax Amount is Required'
+      this.amountError = 'Tax Amount is Required'
     }
     // throw validation error if a decimal
     else if (!this.helperService.hasTwoDecimals(value)) {
-      this.taxAmountError = 'Only 2 decimal places allowed'
+      this.amountError = 'Only 2 decimal places allowed'
     }
     else {
       this.tempAmount = value;
-      this.taxAmountError = undefined;
+      this.amountError = undefined;
     }
+  }
+
+  disableSubmit() {
+    return this.nameError || this.amountError || this.tempName === undefined && this.tempAmount === undefined;
   }
 }

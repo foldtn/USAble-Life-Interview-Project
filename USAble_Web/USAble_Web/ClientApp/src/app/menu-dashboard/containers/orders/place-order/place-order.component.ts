@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-place-order',
@@ -12,4 +11,5 @@ import { Router } from '@angular/router';
 })
 export class PlaceOrderComponent {
 
+  constructor() {}
 }

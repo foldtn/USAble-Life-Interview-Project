@@ -21,10 +21,7 @@ import { Role } from '../models/role.enum';
 
 const routes: Routes = [
   {
-    path: 'taxes',
-    children: [
-      { path: '', component: TaxDashboardComponent, canActivate: [AuthGuard], data: {roles: [Role.Manager]} }
-    ]
+    path: 'taxes', component: TaxDashboardComponent, canActivate: [AuthGuard], data: {roles: [Role.Manager]}
   }
 ];
 

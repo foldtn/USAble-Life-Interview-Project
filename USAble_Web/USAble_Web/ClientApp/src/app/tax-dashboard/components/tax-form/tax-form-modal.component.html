@@ -29,9 +29,9 @@
           >
         </div>
       </div><!--form-group-->
-      <div *ngIf="taxNameError" class="row error">
+      <div *ngIf="nameError" class="row error">
         <div class="col offset-sm-4">
-          <p>{{ taxNameError }}</p>
+          <p>{{ nameError }}</p>
         </div>
       </div>
       <div class="form-group row">
@@ -57,15 +57,15 @@
           </div>
         </div>
       </div><!--form-group-->
-      <div *ngIf="taxAmountError" class="row error">
+      <div *ngIf="amountError" class="row error">
         <div class="col offset-sm-4">
-          <p>{{ taxAmountError }}</p>
+          <p>{{ amountError }}</p>
         </div>
       </div>
     </div><!--card-body-->
     <div class="card-footer d-flex justify-content-center">
       <button type="submit"
-              [disabled]="taxNameError || taxAmountError || tempName === undefined || tempAmount === undefined"
+              [disabled]="disableSubmit()"
               class="btn btn-primary btn-lg"
       >
         Submit

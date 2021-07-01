@@ -64,7 +64,7 @@ namespace USAble_Services.Services
 
             _dbContext.SaveChanges();
 
-            return new TaxResponse((existingTax != null) ? existingTax : newTax);
+            return new TaxResponse(existingTax != null ? existingTax : newTax);
         }
 
         public TaxResponse Update(Taxes tax)
@@ -75,7 +75,7 @@ namespace USAble_Services.Services
 
             var existingTax = GetByName(tax.Name);
 
-            if (existingTax != null)
+            if (existingTax != null && existingTax.Id != taxToUpdate.Id)
             {
                 if (existingTax.Active)
                 {

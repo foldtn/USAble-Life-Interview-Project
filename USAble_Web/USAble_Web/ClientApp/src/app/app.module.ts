@@ -7,7 +7,6 @@ import { RouterModule } from '@angular/router';
 // Components
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
@@ -15,13 +14,13 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
 import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
 import { MenuDashboardModule } from './menu-dashboard/menu-dashboard.module';
 import { TaxDashboardModule } from './tax-dashboard/tax-dashboard.module';
+import { DiscountDashboardModule } from './discount-dashboard/discount-dashboard.module';
 
 // Helpers
 import { JwtInterceptor} from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 
 const routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: NotFoundComponent },
 ];
@@ -30,7 +29,6 @@ const routes = [
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
     NotFoundComponent,
     UnauthorizedComponent,
   ],
@@ -44,6 +42,7 @@ const routes = [
     UserDashboardModule,
     MenuDashboardModule,
     TaxDashboardModule,
+    DiscountDashboardModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

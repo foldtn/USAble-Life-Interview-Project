@@ -75,7 +75,6 @@ namespace USAble_Web.Controllers
 
                 return BadRequest(response.ConvertToJsonObject());
             }
-
         }
 
         [Authorize]

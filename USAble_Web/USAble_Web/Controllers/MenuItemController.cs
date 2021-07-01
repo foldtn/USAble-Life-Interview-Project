@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using USAble_Data;
+using USAble_Data.Models.Dtos;
+using USAble_Services.Extensions;
 using USAble_Services.Interfaces;
 using USAble_Web.Helpers;
 
@@ -20,52 +24,156 @@ namespace USAble_Web.Controllers
         [HttpGet("GetById")]
         public IActionResult GetById(int id)
         {
-            var menuItem = _menuItemService.GetById(id);
-            return Ok(menuItem);
+            var response = new Response();
+
+            try
+            {
+                var menuItem = _menuItemService.GetById(id);
+
+                var menuItemDto = new MenuItemDto(menuItem);
+
+                response.success = true;
+                response.payload = menuItemDto;
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            var menuItems = _menuItemService.GetAll();
-            return Ok(menuItems);
+            var response = new Response();
+
+            try
+            {
+                var menuItems = _menuItemService.GetAll();
+
+                var menuItemsDto = new List<MenuItemDto>();
+
+                foreach (var menuItem in menuItems)
+                {
+                    menuItemsDto.Add(new MenuItemDto(menuItem));
+                }
+
+                response.success = true;
+                response.payload = menuItemsDto;
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpPost("Create")]
         public IActionResult Create(MenuItems menuItem)
         {
-            var response = _menuItemService.Create(menuItem);
+            var response = new Response();
 
-            if (response.errorMessage != null)
-                return BadRequest(new { message = response.errorMessage });
+            try
+            {
+                var menuItemResponse = _menuItemService.Create(menuItem);
 
-            return Ok(response.menuItem);
+                if (menuItemResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = menuItemResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new MenuItemDto(menuItemResponse.menuItem);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpPost("Update")]
         public IActionResult Update(MenuItems menuItem)
         {
-            var response = _menuItemService.Update(menuItem);
+            var response = new Response();
 
-            if (response.errorMessage != null)
-                return BadRequest(new { message = response.errorMessage });
+            try
+            {
+                var menuItemResponse = _menuItemService.Update(menuItem);
 
-            return Ok(response.menuItem);
+                if (menuItemResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = menuItemResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new MenuItemDto(menuItemResponse.menuItem);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpPost("Delete")]
         public IActionResult Delete(MenuItems menuItem)
         {
-            var response = _menuItemService.Delete(menuItem);
+            var response = new Response();
 
-            if (response.errorMessage != null)
-                return BadRequest(new { message = response.errorMessage });
+            try
+            {
+                var menuItemResponse = _menuItemService.Delete(menuItem);
 
-            return Ok();
+                if (menuItemResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = menuItemResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new MenuItemDto(menuItemResponse.menuItem);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
     }
 }

@@ -14,5 +14,11 @@
         {
             this.errorMessage = errorMessage;
         }
+
+        public DiscountResponse(Discounts discount, string errorMessage)
+        {
+            this.discount = discount;
+            this.errorMessage = errorMessage;
+        }
     }
 }

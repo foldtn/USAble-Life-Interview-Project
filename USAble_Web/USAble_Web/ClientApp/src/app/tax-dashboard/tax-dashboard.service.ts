@@ -7,7 +7,7 @@ import { ApiResponse } from '../models/api-response.interface';
 
 @Injectable()
 export class TaxDashboardService {
-  private baseUrl: string;
+  private readonly baseUrl: string;
 
   constructor(
     private http: HttpClient,

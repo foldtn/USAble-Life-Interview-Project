@@ -14,5 +14,11 @@
         {
             this.errorMessage = errorMessage;
         }
+
+        public UserResponse(Users user, string errorMessage)
+        {
+            this.user = user;
+            this.errorMessage = errorMessage;
+        }
     }
 }

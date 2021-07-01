@@ -1,0 +1,147 @@
+<form novalidate (ngSubmit)="toggleEdit()" #form="ngForm">
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="editing">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-sm-6">
+              <h6><label for="name"><span class="requiredAsterisk">*</span> Discount Name: </label></h6>
+            </div>
+            <div class="col-sm">
+              <input id="name"
+                     name="name"
+                     class="form-control"
+                     type="text"
+                     (input)="onNameChange(nameInput.value)"
+                     #nameInput="ngModel"
+                     [ngModel]="detail.Name"
+                     maxlength="25"
+              >
+            </div>
+          </div><!--row-->
+          <div *ngIf="discountNameError" class="row error">
+            <div class="col-sm offset-sm-6">
+              <p>{{ discountNameError }}</p>
+            </div>
+          </div>
+        </div><!--form-group-->
+        <div class="form-group">
+          <div class="row">
+            <div class="col-sm-6">
+              <h6><label for="amount"><span class="requiredAsterisk">*</span> Discount Amount: </label></h6>
+            </div>
+            <div class="col-sm input-group">
+              <div *ngIf="tempDiscountType === 0" class="input-group-append">
+                <span class="input-group-text">$</span>
+              </div>
+              <input id="amount"
+                     name="amount"
+                     class="form-control"
+                     type="number"
+                     (input)="onAmountChange(amountInput.value)"
+                     #amountInput="ngModel"
+                     [ngModel]="detail.Amount"
+                     min="1"
+                     max="100"
+                     step="1"
+                     placeholder="0.5-100"
+              >
+              <div *ngIf="tempDiscountType === 1" class="input-group-append">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+          </div><!--row-->
+          <div *ngIf="discountAmountError" class="row error">
+            <div class="col-sm offset-sm-6">
+              <p>{{ discountAmountError }}</p>
+            </div>
+          </div>
+        </div><!--form-group-->
+        <div class="form-group row">
+          <div class="col-sm offset-sm-2 mt-2 mb-2 custom-control custom-radio">
+            <input [id]="'fixed'+detail.Id"
+                   [name]="'discountType'+detail.Id"
+                   type="radio"
+                   class="custom-control-input"
+                   value="0"
+                   (change)="onDiscountTypeChange($event)"
+                   [checked]="detail.DiscountType == 0"
+            >
+            <h6><label class="custom-control-label" [for]="'fixed'+detail.Id">Fixed</label></h6>
+          </div>
+          <div class="col-sm mt-2 mb-2 custom-control custom-radio">
+            <input [id]="'percentage'+detail.Id"
+                   [name]="'discountType'+detail.Id"
+                   type="radio"
+                   class="custom-control-input"
+                   value="1"
+                   (change)="onDiscountTypeChange($event)"
+                   [checked]="detail.DiscountType == 1"
+            >
+            <h6><label class="custom-control-label" [for]="'percentage'+detail.Id">Percentage</label></h6>
+          </div>
+        </div><!--form-group-->
+      </div><!--editing-->
+      <div *ngIf="!editing">
+        <div class="row">
+          <div class="col-sm">
+            <h6>Discount Name: </h6>
+          </div>
+          <div class="col-sm">
+            <p>{{ detail.Name }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm">
+            <h6>Discount Amount: </h6>
+          </div>
+          <div class="col-sm">
+            <p><span *ngIf="detail.DiscountType === 0">$</span>{{ detail.Amount }}<span *ngIf="detail.DiscountType === 1">%</span></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm">
+            <h6>Discount Type: </h6>
+          </div>
+          <div class="col-sm">
+            <p>{{ detail.DiscountType === 0 ? 'Fixed' : 'Percentage' }}</p>
+          </div>
+        </div>
+      </div><!--!editing-->
+      <div class="col-sm-6 offset-sm-3 mt-2">
+        <div *ngIf="failedAlert" class="alert alert-danger alert-dismissible">
+          <a class="close" data-dismiss="alert" aria-label="close" (click)="closeFailedAlert()">&times;</a>
+          {{ failedAlertMessage }}
+        </div>
+      </div>
+      <div class="row">
+        <div *ngIf="!editing" class="col-sm-6">
+          <button type="button"
+                  class="btn btn-primary btn-sm btn-block"
+                  (click)="toggleEdit()"
+          >
+            Edit
+          </button>
+        </div>
+        <div *ngIf="editing" class="col-sm-3">
+          <button type="submit"
+                  [disabled]="disableSubmit()"
+                  class="btn btn-primary btn-sm btn-block"
+          >
+            Submit
+          </button>
+        </div>
+        <div *ngIf="editing" class="col-sm-3">
+          <button type="button" class="btn btn-warning btn-sm btn-block" (click)="undoChanges()">
+            Undo
+          </button>
+        </div>
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-danger btn-sm btn-block" (click)="onDelete()">
+            Delete
+          </button>
+        </div>
+      </div><!--row-->
+    </div><!--card-body-->
+  </div><!--card-->
+</form><!--form-->

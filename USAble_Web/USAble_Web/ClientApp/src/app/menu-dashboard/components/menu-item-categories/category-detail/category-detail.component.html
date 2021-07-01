@@ -1,0 +1,75 @@
+<form novalidate (ngSubmit)="toggleEdit()" #form="ngForm">
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="editing">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-sm-6">
+              <h6><label for="name"><span class="requiredAsterisk">*</span> Category Name: </label></h6>
+            </div>
+            <div class="col-sm">
+              <input id="name"
+                     name="name"
+                     class="form-control"
+                     type="text"
+                     (input)="onNameChange(nameInput.value)"
+                     #nameInput="ngModel"
+                     [ngModel]="detail.Name"
+                     maxlength="25"
+              >
+            </div>
+          </div><!--row-->
+          <div *ngIf="nameError" class="row error">
+            <div class="col offset-sm-6">
+              <p>{{ nameError }}</p>
+            </div>
+          </div>
+        </div><!--form-group-->
+      </div><!--editing-->
+      <div *ngIf="!editing">
+        <div class="row">
+          <div class="col-sm-6">
+            <h6>Category Name: </h6>
+          </div>
+          <div class="col-sm">
+            <p>{{ detail.Name }}</p>
+          </div>
+        </div>
+      </div><!--!editing-->
+      <div class="col-sm-6 offset-sm-3 mt-2">
+        <div *ngIf="failedAlert" class="alert alert-danger alert-dismissible">
+          <a class="close" data-dismiss="alert" aria-label="close" (click)="closeFailedAlert()">&times;</a>
+          {{ failedAlertMessage }}
+        </div>
+      </div>
+      <div class="row">
+        <div *ngIf="!editing" class="col-sm-6">
+          <button type="button"
+                  class="btn btn-primary btn-sm btn-block"
+                  (click)="toggleEdit()"
+          >
+            Edit
+          </button>
+        </div>
+        <div *ngIf="editing" class="col-sm-3">
+          <button type="submit"
+                  [disabled]="disableSubmit()"
+                  class="btn btn-primary btn-sm btn-block"
+          >
+            Submit
+          </button>
+        </div>
+        <div *ngIf="editing" class="col-sm-3">
+          <button type="button" class="btn btn-warning btn-sm btn-block" (click)="undoChanges()">
+            Undo
+          </button>
+        </div>
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-danger btn-sm btn-block" (click)="onDelete()">
+            Delete
+          </button>
+        </div>
+      </div><!--row-->
+    </div><!--card-body-->
+  </div><!--card-->
+</form><!--form-->

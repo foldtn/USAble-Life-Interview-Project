@@ -14,5 +14,11 @@
         {
             this.errorMessage = errorMessage;
         }
+
+        public OrderResponse(Orders order, string errorMessage)
+        {
+            this.order = order;
+            this.errorMessage = errorMessage;
+        }
     }
 }
