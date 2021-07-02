@@ -93,6 +93,8 @@ namespace USAble_Services.Services
             }
             else
             {
+                existingCategory = null;
+
                 categoryToUpdate.Name = category.Name;
                 categoryToUpdate.ModifiedBy = category.ModifiedBy;
                 categoryToUpdate.ModifiedDate = DateTime.UtcNow;

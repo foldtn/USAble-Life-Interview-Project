@@ -96,6 +96,8 @@ namespace USAble_Services.Services
             }
             else
             {
+                existingDiscount = null;
+
                 discountToUpdate.Name = discount.Name;
                 discountToUpdate.Amount = discount.Amount;
                 discountToUpdate.ModifiedBy = discount.ModifiedBy;

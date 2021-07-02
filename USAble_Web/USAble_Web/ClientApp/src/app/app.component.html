@@ -1,6 +1,18 @@
 <body>
-  <app-nav-menu></app-nav-menu>
-  <div class="container-fluid">
+  <header class="fixed-header">
+    <app-nav-menu></app-nav-menu>
+  </header>
+  <main role="main" class="container-fluid">
     <router-outlet></router-outlet>
-  </div>
+  </main>
+  <footer class="fixed-footer">
+    <div class="row">
+      <div class="col-sm-6 text-center">
+        <h5>&copy; USAble Life</h5>
+      </div>
+      <div class="col-sm-6 text-center">
+        <h5>Created By: Timothy Folds</h5>
+      </div>
+    </div>
+  </footer>
 </body>

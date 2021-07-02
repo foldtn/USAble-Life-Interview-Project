@@ -6,6 +6,11 @@ a {
   cursor: pointer;
 }
 
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
 code {
   color: #e01a76;
 }
@@ -23,3 +28,44 @@ code {
 .error {
   color: red;
 }
+
+.valid {
+  border-color: green;
+}
+
+.invalid {
+  border-color: red;
+}
+
+.fixed-header, .fixed-footer {
+  width: 100%;
+  position: fixed;
+  background: #333;
+  padding: 10px 0;
+  color: #fff;
+  z-index: 9999;
+}
+
+.fixed-header {
+  top: 0;
+}
+
+.fixed-footer {
+  bottom: 0;
+}
+
+.container {
+  z-index: -1;
+}
+
+.container {
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 1050px) {
+  .card {
+    border: 1px groove black;
+    box-shadow: 3px 3px grey;
+  }
+}
+

@@ -96,6 +96,8 @@ namespace USAble_Services.Services
             }
             else
             {
+                existingTax = null;
+
                 taxToUpdate.Name = tax.Name;
                 taxToUpdate.Amount = tax.Amount;
                 taxToUpdate.ModifiedBy = tax.ModifiedBy;

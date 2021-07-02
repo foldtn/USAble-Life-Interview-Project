@@ -1,0 +1,63 @@
+<div class="card">
+  <div class="card-header">
+    <h5>{{ detail.Name }}</h5>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-4">
+        <h6>Cost: </h6>
+      </div>
+      <div class="col-sm">
+        <p>{{ detail.Cost | currency }}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <h6>Category: </h6>
+      </div>
+      <div class="col-sm">
+        <p>{{ getCategoryText(detail.MenuItemCategoryId) }}</p>
+      </div>
+    </div>
+  </div><!--card-body-->
+  <div class="card-footer">
+    <form novalidate [formGroup]="menuItemOrderDetailForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-sm-4">
+          <h6>Quantity: </h6>
+        </div>
+        <div class="col-sm">
+          <input id="quantity"
+                 formControlName="Quantity"
+                 class="form-control"
+                 type="number"
+                 step="1"
+                 placeholder="0"
+                 (input)="onQuantityChange()"
+                 [class.valid]="getFormGroup('Quantity').valid &&
+                    (getFormGroup('Quantity').dirty || getFormGroup('Quantity').touched)"
+                 [class.invalid]="getFormGroup('Quantity').invalid &&
+                    (getFormGroup('Quantity').dirty || getFormGroup('Quantity').touched)"
+          >
+        </div>
+        <div class="col-sm offset-sm-4" *ngIf="hasErrors('Quantity') || notIntegerError">
+          <small class="text-danger" *ngIf="notIntegerError">
+            Must be a whole number.
+          </small>
+          <small class="text-danger"
+                 *ngIf="getFormGroup('Quantity').hasError('min')">
+            Must be 0 or greater.
+          </small>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button type="submit"
+                [disabled]="!menuItemOrderDetailForm.valid || notIntegerError"
+                class="btn btn-primary btn-sm btn-block"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div><!--card-->

@@ -1,0 +1,102 @@
+<div class="card-header text-center">
+  <h1>Order Summary</h1>
+</div>
+<div class="card-body">
+  <h5>Order Items:</h5>
+  <div *ngIf="orderItems.length === 0">
+    <p>No order items currently selected</p>
+  </div>
+  <div *ngFor="let orderItem of orderItems;">
+    <div class="row">
+      <div class="col-sm">
+        <p>${{getItemCost(orderItem)}}</p>
+      </div>
+      <div class="col-sm">
+        <p>{{ orderItem.quantity }}x {{ orderItem.menuItem.Name }}</p>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <h5 *ngIf="taxes !== undefined && taxes.length !== 0">Taxes:</h5>
+  <div *ngFor="let tax of taxes;">
+    <div class="row">
+      <div class="col-sm">
+        <p>{{ tax.Name }}</p>
+      </div>
+      <div class="col-sm">
+        <p>{{ tax.Amount }}%</p>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <h5>Total:</h5>
+  <div class="row">
+    <div class="col-sm">
+      <p>Sub Total:</p>
+    </div>
+    <div class="col-sm">
+      <p>{{ subTotal | currency }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <p>{{ selectedName }}</p>
+    </div>
+    <div *ngIf="selectedAmount !== undefined" class="col-sm">
+      <p>{{ (selectedFixed) ? (selectedAmount | currency) : (selectedAmount + '%') }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <p>Pre-tax Total:</p>
+    </div>
+    <div class="col-sm">
+      <p>{{ preTaxTotal | currency }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <p>Total Tax Amount:</p>
+    </div>
+    <div class="col-sm">
+      <p>{{ totalTaxAmount }}%</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <p>Total Cost:</p>
+    </div>
+    <div class="col-sm">
+      <p>{{ calculateTotal() | currency }}</p>
+    </div>
+  </div>
+</div>
+<div class="card-footer">
+  <form novalidate [formGroup]="orderForm" (ngSubmit)="submitSummary()">
+    <div class="row d-flex justify-content-center">
+      <div class="col-sm-6">
+        <h6><label for="discount">Menu Item Category: </label></h6>
+      </div>
+      <div class="col-sm">
+        <select id="discount"
+                formControlName="Discount"
+                class="form-select"
+        >
+          <option [value]="null">Select Category</option>
+          <option *ngFor="let discount of discounts" [value]="discount.Id">{{ discount.Name }}</option>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="discountError" class="mt-4 alert alert-danger text-center">
+      Discount cannot be greater than or equal to the Sub Total
+    </div>
+    <div class="row mt-4 d-flex justify-content-center">
+      <button type="submit"
+              [disabled]="!canSubmit() || discountError"
+              class="btn btn-primary btn-sm btn-block"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

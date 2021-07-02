@@ -8,7 +8,7 @@ namespace USAble_Data.Models.Requests
     public class AuthenticateRequest
     {
         [Required]
-        public string Username { get; set; }
+        public int Username { get; set; }
         [Required]
         public string Password { get; set; }
     }

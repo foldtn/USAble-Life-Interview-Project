@@ -144,7 +144,13 @@ namespace USAble_Data
             {
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
+                entity.Property(e => e.PreTaxTotal).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.SubTotal).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.TotalTaxAmount).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.Orders)
@@ -222,10 +228,6 @@ namespace USAble_Data
                     .HasMaxLength(25);
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Username)
-                    .IsRequired()
-                    .HasMaxLength(255);
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.InverseCreatedByNavigation)

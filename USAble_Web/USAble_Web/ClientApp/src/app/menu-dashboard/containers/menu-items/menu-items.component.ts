@@ -17,7 +17,7 @@ import { MenuItemCategories } from '../../models/menu-item-categories.interface'
     <div class="text-center">
       <h1>Menu Items</h1>
     </div>
-    <app-menu-item-form (create)="handleCreate($event)"></app-menu-item-form>
+    <app-menu-item-form [categories]="categories" (create)="handleCreate($event)"></app-menu-item-form>
     <div class="col-sm-6 offset-sm-3 mt-2">
       <div *ngIf="successAlert" class="alert alert-success alert-dismissible">
         <a class="close" data-dismiss="alert" aria-label="close" (click)="closeSuccessAlert()">&times;</a>
@@ -63,17 +63,6 @@ export class MenuItemsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.menuItemService
-      .getMenuItems()
-      .subscribe((data: ApiResponse) => {
-        if (data.success) {
-          this.menuItems = data.payload;
-        }
-        else {
-          console.log(data.error);
-        }
-      });
-
     this.categoryService
       .getCategories()
       .subscribe((data: ApiResponse) => {
@@ -85,6 +74,16 @@ export class MenuItemsComponent implements OnInit {
         }
       });
 
+    this.menuItemService
+      .getMenuItems()
+      .subscribe((data: ApiResponse) => {
+        if (data.success) {
+          this.menuItems = data.payload;
+        }
+        else {
+          console.log(data.error);
+        }
+      });
   }
 
   handleCreate(event: MenuItems) {
@@ -95,6 +94,7 @@ export class MenuItemsComponent implements OnInit {
     this.menuItemService.createMenuItem(event).subscribe((data: ApiResponse) => {
       if (data.success) {
         this.menuItems.push(data.payload);
+        this.menuItems = this.sort(this.menuItems);
         this.successAlert = true;
       }
       else {
@@ -133,8 +133,8 @@ export class MenuItemsComponent implements OnInit {
     this.menuItemService.deleteMenuItem(event).subscribe((data: ApiResponse) => {
       if (data.success) {
         // Remove deleted item from taxes array
-        this.menuItems = this.menuItems.filter((tax: MenuItems) => {
-          return tax.Id !== event.Id;
+        this.menuItems = this.menuItems.filter((menuItem: MenuItems) => {
+          return menuItem.Id !== event.Id;
         });
       }
       else {
@@ -149,5 +149,13 @@ export class MenuItemsComponent implements OnInit {
 
   closeFailedAlert() {
     this.failedAlert = false;
+  }
+
+  sort(menuItems: MenuItems[]) : MenuItems[] {
+    return menuItems.sort(function(a, b) {
+      let textA = a.Name.toUpperCase();
+      let textB = b.Name.toUpperCase();
+      return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+    });
   }
 }

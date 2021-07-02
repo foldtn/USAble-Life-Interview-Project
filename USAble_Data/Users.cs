@@ -25,7 +25,7 @@ namespace USAble_Data
         }
 
         public int Id { get; set; }
-        public string Username { get; set; }
+        public int Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int UserRoleId { get; set; }

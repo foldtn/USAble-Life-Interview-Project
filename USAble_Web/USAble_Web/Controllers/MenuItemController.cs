@@ -46,7 +46,6 @@ namespace USAble_Web.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {

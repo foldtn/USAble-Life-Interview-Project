@@ -5,6 +5,7 @@ import { MenuItems } from '../../../models/menu-items.interface';
 import { MenuItemCategories } from '../../../models/menu-item-categories.interface';
 
 import { HelperService } from '../../../../services/helper.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-menu-item-form',
@@ -37,13 +38,15 @@ export class MenuItemFormComponent {
 
     modalRef.componentInstance.categories = this.categories;
 
-    modalRef.result.then((result: MenuItems) => {
-      this.menuItem = result;
-      this.create.emit(result);
+    modalRef.result.then((result: any) => {
+      if (result.valid){
+        this.menuItem = result.value;
+        this.menuItem.MenuItemCategoryId = parseInt(result.value.MenuItemCategoryId);
+        this.create.emit(this.menuItem);
+      }
     },(reason) => {
       console.log(reason);
     });
-
   }
 }
 
@@ -54,49 +57,44 @@ export class MenuItemFormComponent {
 })
 export class MenuItemFormModalContent implements OnInit {
   categories: MenuItemCategories[];
-  decimalPattern: string;
-  nameError: string;
-  costError: string;
-  tempName: string;
-  tempCost: number;
-  tempCategory: number;
+
+  menuItemDetailForm: FormGroup;
 
   constructor(
     public menuItemFormModal: NgbActiveModal,
-    public helperService: HelperService,
-  ){}
+    private helperService: HelperService,
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit() {
-    this.decimalPattern = this.helperService.twoDecimalCheckString();
+    let test = this.categories;
+
+    this.menuItemDetailForm = this.fb.group({
+      Name: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(25)
+        ]
+      ],
+      Cost: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(this.helperService.twoDecimalPattern()),
+          Validators.min(1),
+          Validators.max(100)
+        ]
+      ],
+      MenuItemCategoryId: null,
+    });
   }
 
-  onNameChange(value: string) {
-    // check if name already exists
-    if (value === undefined || value === null || value === '') {
-      this.nameError = 'Tax Name is Required';
-    }
-    else {
-      this.tempName = value;
-      this.nameError = undefined;
-    }
+  getFormGroup(value: string) {
+    return this.menuItemDetailForm.get(value);
   }
 
-  onAmountChange(value: number) {
-    // throw required validation error
-    if (value === undefined || value === null) {
-      this.costError = 'Tax Amount is Required'
-    }
-    // throw validation error if a decimal
-    else if (!this.helperService.hasTwoDecimals(value)) {
-      this.costError = 'Only 2 decimal places allowed'
-    }
-    else {
-      this.tempCost = value;
-      this.costError = undefined;
-    }
-  }
-
-  disableSubmit() {
-    return this.nameError || this.costError || this.tempName === undefined || this.tempCost === undefined;
+  hasErrors(value: string) {
+    return this.getFormGroup(value).invalid && this.getFormGroup(value).errors && (this.getFormGroup(value).dirty || this.getFormGroup(value).touched)
   }
 }

@@ -6,6 +6,7 @@ using USAble_Services.Interfaces;
 using USAble_Data.Models.Requests;
 using USAble_Data.Models.Responses;
 using Microsoft.EntityFrameworkCore;
+using USAble_Data.Models.Dtos;
 
 namespace USAble_Services.Services
 {
@@ -21,7 +22,7 @@ namespace USAble_Services.Services
         public Orders GetById(int id)
         {
             return _dbContext.Orders
-                .Include(x => x.Discount)
+                .Include(x => x.OrderMenuItems)
                 .Include(x => x.OrderTaxes)
                 .SingleOrDefault(x => x.Id == id);
         }
@@ -34,51 +35,47 @@ namespace USAble_Services.Services
                 .ToList();
         }
 
-        public OrderResponse Create(OrderSubmitRequest request)
+        public OrderResponse Create(OrderRequest request)
         {
-            try
+            var newOrder = new Orders
             {
-                var newOrder = new Orders
-                {
-                    DiscountId = request.order.DiscountId,
-                    Total = request.order.Total,
-                    CreatedBy = request.order.CreatedBy,
-                    CreatedDate = DateTime.UtcNow,
-                };
+                DiscountId = request.order.DiscountId,
+                SubTotal = decimal.Round(request.order.SubTotal, 2),
+                PreTaxTotal = decimal.Round(request.order.PreTaxTotal, 2),
+                TotalTaxAmount = request.order.TotalTaxAmount,
+                Total = decimal.Round(request.order.Total, 2),
+                CreatedBy = request.order.CreatedBy,
+                CreatedDate = DateTime.UtcNow,
+            };
 
-                _dbContext.Orders.Add(newOrder);
-                _dbContext.SaveChanges();
+            _dbContext.Orders.Add(newOrder);
+            _dbContext.SaveChanges();
 
-                foreach (var menuItem in request.menuItems)
-                {
-                    _dbContext.OrderMenuItems.Add(new OrderMenuItems
-                    {
-                        OrderId = newOrder.Id,
-                        MenuItemId = menuItem.menuItem.Id,
-                        Quantity = menuItem.Quantity
-                    });
-                }
-
-                foreach (var tax in request.taxes)
-                {
-                    _dbContext.OrderTaxes.Add(new OrderTaxes
-                    {
-                        OrderId = newOrder.Id,
-                        TaxId = tax.Id
-                    });
-                }
-
-                _dbContext.SaveChanges();
-
-                return new OrderResponse(_dbContext.Orders
-                    .Include(x => x.OrderMenuItems)
-                    .Include(x => x.OrderTaxes)
-                    .SingleOrDefault(x => x.Id == newOrder.Id));
-            }
-            catch (Exception ex)
+            foreach (var itemRequest in request.menuItemRequests)
             {
-                return new OrderResponse($"Error: {ex.Message}");
+                _dbContext.OrderMenuItems.Add(new OrderMenuItems
+                {
+                    OrderId = newOrder.Id,
+                    MenuItemId = itemRequest.menuItem.Id,
+                    Quantity = itemRequest.Quantity
+                });
             }
+
+            foreach (var tax in request.taxes)
+            {
+                _dbContext.OrderTaxes.Add(new OrderTaxes
+                {
+                    OrderId = newOrder.Id,
+                    TaxId = tax.Id
+                });
+            }
+
+            _dbContext.SaveChanges();
+
+            return new OrderResponse(_dbContext.Orders
+                .Include(x => x.OrderMenuItems)
+                .Include(x => x.OrderTaxes)
+                .SingleOrDefault(x => x.Id == newOrder.Id));
         }
     }
 }

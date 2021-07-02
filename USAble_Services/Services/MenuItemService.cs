@@ -28,7 +28,7 @@ namespace USAble_Services.Services
 
         public List<MenuItems> GetAll()
         {
-            return _dbContext.MenuItems.Where(x => x.Active).ToList();
+            return _dbContext.MenuItems.Where(x => x.Active).OrderBy(x => x.Name).ToList();
         }
 
         public MenuItemResponse Create(MenuItems menuItem)
@@ -99,6 +99,8 @@ namespace USAble_Services.Services
             }
             else
             {
+                existingMenuItem = null;
+
                 menuItemToUpdate.Name = menuItem.Name;
                 menuItemToUpdate.Cost = menuItem.Cost;
                 menuItemToUpdate.MenuItemCategoryId = menuItem.MenuItemCategoryId;

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace USAble_Data.Models.Responses
+﻿namespace USAble_Data.Models.Responses
 {
     public class AuthenticateResponse
     {
         public int Id { get; set; }
-        public string Username { get; set; }
+        public int Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserRole { get; set; }

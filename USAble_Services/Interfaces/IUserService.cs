@@ -9,7 +9,7 @@ namespace USAble_Services.Interfaces
     {
         public AuthenticateResponse Authenticate(AuthenticateRequest model);
         public Users GetById(int userId);
-        public Users GetByUsername(string username);
+        public Users GetByUsername(int username);
         public List<Users> GetAll(); // Add Pagenation
         public UserResponse Create(Users discount, UserPasswords password);
         public UserResponse Update(Users user, UserPasswords password = null);

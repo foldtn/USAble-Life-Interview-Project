@@ -58,7 +58,7 @@ namespace USAble_Services.Services
             return user;
         }
 
-        public Users GetByUsername(string username)
+        public Users GetByUsername(int username)
         {
             var user = _dbContext.Users.SingleOrDefault(x => x.Username == username);
 

@@ -16,6 +16,9 @@ namespace USAble_Data
 
         public int Id { get; set; }
         public int? DiscountId { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal PreTaxTotal { get; set; }
+        public decimal TotalTaxAmount { get; set; }
         public decimal Total { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

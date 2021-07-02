@@ -1,4 +1,5 @@
-import {Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { MenuItems } from '../../../models/menu-items.interface';
 import { MenuItemCategories } from '../../../models/menu-item-categories.interface';
@@ -11,7 +12,7 @@ import { HelperService } from '../../../../services/helper.service';
   styleUrls: ['menu-item-detail.component.css'],
   templateUrl: 'menu-item-detail.component.html'
 })
-export class MenuItemDetailComponent implements OnChanges {
+export class MenuItemDetailComponent implements OnInit, OnChanges {
   @Input()
   detail: MenuItems;
 
@@ -28,104 +29,107 @@ export class MenuItemDetailComponent implements OnChanges {
   delete: EventEmitter<MenuItems> = new EventEmitter<MenuItems>();
 
   editing: boolean = false;
-  nameError: string;
-  costError: string;
-  tempName: string;
-  tempCost: number;
-  tempCategory: number;
+
+  revertId: number;
   revertName: string;
   revertCost: number;
   revertCategory: number;
   failedAlertMessage: string;
   failedAlert: boolean = false;
 
-  constructor(private helperService: HelperService,) {}
+  menuItemDetailForm: FormGroup;
 
-  ngOnChanges(changes) {
-    if (changes.detail) {
-      this.detail = Object.assign({}, changes.detail.currentValue);
-      this.tempName = this.detail.Name;
-      this.tempCost = this.detail.Cost;
-      this.tempCategory = this.detail.MenuItemCategoryId;
+  constructor(
+    private helperService: HelperService,
+    private fb: FormBuilder,
+  ) {}
+
+  ngOnInit() {
+    let detailName: string;
+    let detailCost: number;
+    let selectedCategory: string = null;
+
+    if (this.detail !== undefined) {
+      detailName = this.detail.Name;
+      detailCost = this.detail.Cost;
+
+      let category = this.getCategoryById(this.detail.MenuItemCategoryId);
+
+      if (category !== undefined) {
+        selectedCategory = category.Id.toString();
+      }
+
+      // set revert names for undo and errors
+      this.revertId = this.detail.Id;
+      this.revertName = this.detail.Name;
+      this.revertCost = this.detail.Cost;
+      this.revertCategory = this.detail.MenuItemCategoryId;
     }
 
-    if (changes.response) {
-      const response = Object.assign({}, changes.response.currentValue);
-      if (response.success !== undefined) {
-        if(response.success){
-          if (this.tempName !== undefined) {
-            this.detail.Name = this.tempName;
+    this.menuItemDetailForm = this.fb.group({
+      Id: this.detail.Id,
+      Name: [
+        detailName,
+        [
+          Validators.required,
+          Validators.maxLength(25)
+        ]
+      ],
+      Cost: [
+        detailCost,
+        [
+          Validators.required,
+          Validators.pattern(this.helperService.twoDecimalPattern()),
+          Validators.min(1),
+          Validators.max(100)
+        ]
+      ],
+      MenuItemCategoryId: selectedCategory,
+    });
+  }
+
+  ngOnChanges() {
+    if (this.menuItemDetailForm !== undefined) {
+      if (this.response !== undefined && this.response.payload !== undefined)
+      {
+        let payload = this.response.payload;
+
+        if (payload.Id === this.detail.Id)
+        {
+          if (this.response.success) {
+            this.detail = payload;
+
+            this.menuItemDetailForm.patchValue({
+              Id: payload.Id,
+              Name: payload.Name,
+              Cost: payload.Cost,
+              MenuItemCategoryId: payload.MenuItemCategoryId.toString()
+            });
           }
+          else {
+            this.failedAlert = true;
+            this.failedAlertMessage = this.response.error;
 
-          if (this.tempCost !== undefined) {
-            this.detail.Cost = this.tempCost;
+            this.editing = true;
+
+            this.revertDetails();
           }
-
-          if (this.tempCategory !== undefined) {
-            this.detail.MenuItemCategoryId = this.tempCategory
-          }
-
-          this.editing = false;
-        } else if (response.payload.Id === this.detail.Id) {
-          this.detail.Name = this.revertName;
-          this.detail.Cost = this.revertCost;
-          this.detail.MenuItemCategoryId = this.revertCategory;
-
-          this.tempName = this.detail.Name;
-          this.tempCost = this.detail.Cost;
-          this.tempCategory = this.detail.MenuItemCategoryId;
-
-          this.revertName = undefined;
-          this.revertCost = undefined;
-          this.revertCategory = undefined;
-
-          this.editing = true;
-
-          this.failedAlertMessage = response.error;
-          this.failedAlert = true;
         }
+      }
+      else {
+        this.revertDetails();
       }
     }
   }
 
-  onNameChange(value: string) {
-    // check if name is already exists
-    if (value === undefined || value === null || value === '') {
-      this.nameError = 'Tax Name is Required';
+  onSubmit() {
+    if (this.menuItemDetailForm.valid) {
+      this.detail = this.menuItemDetailForm.value;
+      this.detail.MenuItemCategoryId = parseInt(this.menuItemDetailForm.value.MenuItemCategoryId);
+      this.update.emit(this.detail);
+      this.editing = false;
+      this.closeFailedAlert();
     }
-    else {
-      this.tempName = value;
-      this.nameError = undefined;
-    }
-
-    this.closeFailedAlert();
-  }
-
-  onCostChange(value: number) {
-    // throw required validation error
-    if (value === undefined || value === null) {
-      this.costError = 'Tax Amount is Required'
-    }
-    // throw validation error if outside of 0 - 100 number range
-    else if (value < 0.5 || 100 < value) {
-      this.costError = 'Not within range (0.5-100)'
-    }
-    // throw validation error if a decimal
-    else if (!this.helperService.hasTwoDecimals(value)) {
-      this.costError = 'Only 2 decimal places allowed'
-    }
-    else {
-      this.tempCost = value;
-      this.costError = undefined;
-    }
-
-    this.closeFailedAlert();
-  }
-
-  onCategoryChange(value: any) {
-    this.tempCategory = parseInt(value);
-
-    this.closeFailedAlert();
   }
 
   onDelete() {
@@ -133,37 +137,11 @@ export class MenuItemDetailComponent implements OnChanges {
   }
 
   undoChanges() {
-    this.nameError = undefined;
-    this.costError = undefined;
-    this.revertName = undefined;
-    this.revertCost = undefined;
-    this.revertCategory = undefined;
+    this.revertForm();
+
     this.editing = false;
 
     this.closeFailedAlert();
-  }
-
-  toggleEdit() {
-    if (this.editing) {
-      if (this.tempName !== undefined) {
-        this.revertName = this.detail.Name;
-        this.detail.Name = this.tempName;
-      }
-
-      if (this.tempCost !== undefined) {
-        this.revertCost = this.detail.Cost;
-        this.detail.Cost = this.tempCost;
-      }
-
-      if (this.tempCost !== undefined) {
-        this.revertCategory = this.detail.MenuItemCategoryId;
-        this.detail.MenuItemCategoryId = this.tempCategory;
-      }
-
-      this.update.emit(this.detail);
-    }
-
-    this.editing = !this.editing;
   }
 
   closeFailedAlert() {
@@ -171,9 +149,8 @@ export class MenuItemDetailComponent implements OnChanges {
     this.failedAlertMessage = undefined;
   }
 
-  disableSubmit() {
-    return (this.nameError || this.costError) ||
-      (this.tempName === this.detail.Name && this.tempCost === this.detail.Cost && this.tempCategory === this.detail.MenuItemCategoryId)
+  setEditing() {
+    this.editing = true;
   }
 
   getCategoryText(value: number) {
@@ -190,5 +167,31 @@ export class MenuItemDetailComponent implements OnChanges {
         }
       });
     }
+  }
+
+  revertDetails() {
+    this.detail.Id = this.revertId;
+    this.detail.Name = this.revertName;
+    this.detail.Cost = this.revertCost;
+    this.detail.MenuItemCategoryId = this.revertCategory;
+
+    this.revertForm();
+  }
+
+  revertForm() {
+    this.menuItemDetailForm.patchValue({
+      Id: this.revertId,
+      Name: this.revertName,
+      Cost: this.revertCost,
+      MenuItemCategoryId: this.revertCategory
+    });
+  }
+
+  getFormGroup(value: string) {
+    return this.menuItemDetailForm.get(value);
+  }
+
+  hasErrors(value: string) {
+    return this.getFormGroup(value).invalid && this.getFormGroup(value).errors && (this.getFormGroup(value).dirty || this.getFormGroup(value).touched)
   }
 }

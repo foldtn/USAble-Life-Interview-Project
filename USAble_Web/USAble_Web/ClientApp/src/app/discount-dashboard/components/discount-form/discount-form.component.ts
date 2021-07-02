@@ -65,7 +65,7 @@ export class DiscountFormModalContent implements OnInit {
   ){}
 
   ngOnInit() {
-    this.decimalPattern = this.helperService.twoDecimalCheckString();
+    this.decimalPattern = this.helperService.twoDecimalPattern();
   }
 
   onNameChange(value: string) {

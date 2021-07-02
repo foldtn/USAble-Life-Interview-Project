@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Containers
-import { MenuDashboardComponent } from './containers/menu-dashboard.component';
+import { MenuDashboardComponent } from './containers/menu-dashboard/menu-dashboard.component';
 import { MenuItemsComponent } from './containers/menu-items/menu-items.component';
 import { MenuItemCategoriesComponent } from './containers/menu-item-categories/menu-item-categories.component';
 import { OrdersComponent } from './containers/orders/orders.component';
@@ -18,6 +18,9 @@ import { CategoryDetailComponent } from './components/menu-item-categories/categ
 import { CategoryFormComponent, CategoryFormModalContent } from './components/menu-item-categories/category-form/category-form.component';
 import { MenuItemDetailComponent } from './components/menu-items/menu-item-detail/menu-item-detail.component';
 import { MenuItemFormComponent, MenuItemFormModalContent } from './components/menu-items/menu-item-form/menu-item-form.component';
+import { MenuDetailComponent } from './components/menu-dashboard/menu-detail.component';
+import { OrderItemDetailComponent } from './components/orders/order-item-detail/order-item-detail.component';
+import { OrderSummaryComponent } from './components/orders/order-summary/order-summary.component';
 
 // Services
 import { MenuItemsService } from './services/menu-items.service';
@@ -59,6 +62,9 @@ const routes: Routes = [
     MenuItemDetailComponent,
     MenuItemFormComponent,
     MenuItemFormModalContent,
+    MenuDetailComponent,
+    OrderItemDetailComponent,
+    OrderSummaryComponent
   ],
   imports: [
     // Angular Modules
