@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using USAble_Data;
+using USAble_Data.Models.Dtos;
 using USAble_Data.Models.Requests;
+using USAble_Services.Extensions;
 using USAble_Services.Interfaces;
 using USAble_Web.Helpers;
 
@@ -44,48 +48,130 @@ namespace USAble_Web.Controllers
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            var response = _userService.GetAll();
+            var response = new Response();
 
-            if (response == null)
-                return BadRequest(new { message = "No users found" });
+            try
+            {
+                var users = _userService.GetAll();
 
-            return Ok(response);
+                var usersDto = new List<UserDto>();
+
+                foreach (var user in users)
+                {
+                    usersDto.Add(new UserDto(user));
+                }
+
+                response.success = true;
+                response.payload = usersDto;
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpPost("Create")]
         public IActionResult Create(UserRequest request)
         {
-            var response = _userService.Create(request.User, request.Password);
+            var response = new Response();
 
-            if (response.errorMessage != null)
-                return BadRequest(new { message = response.errorMessage });
+            try
+            {
+                var userResponse = _userService.Create(request.User, request.Password);
 
-            return Ok(response.user);
+                if (userResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = userResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new UserDto(userResponse.user);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpPost("Update")]
-        public IActionResult Update(Users user)
+        public IActionResult Update(UserRequest request)
         {
-            var response = _userService.Update(user);
+            var response = new Response();
 
-            if (response.errorMessage != null)
-                return BadRequest(new { message = response.errorMessage });
+            try
+            {
+                var userResponse = _userService.Update(request.User, request.Password);
 
-            return Ok(response.user);
+                if (userResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = userResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new UserDto(userResponse.user);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpPost("Delete")]
         public IActionResult Delete(Users user)
         {
-            var response = _userService.Delete(user);
+            var response = new Response();
 
-            if (response.errorMessage != null)
-                return BadRequest(new { message = response.errorMessage });
+            try
+            {
+                var userResponse = _userService.Delete(user);
 
-            return Ok();
+                if (userResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = userResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new UserDto(userResponse.user);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
     }
 }

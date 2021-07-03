@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { OrderDto } from '../../models/order-dto/order-dto.interface';
 
 import { OrderService } from '../../services/order.service';
-import {ApiResponse} from '../../../models/api-response.interface';
+import { ApiResponse } from '../../../models/api-response.interface';
 
 @Component({
   selector: 'app-orders',

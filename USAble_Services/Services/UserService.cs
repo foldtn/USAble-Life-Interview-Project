@@ -119,12 +119,12 @@ namespace USAble_Services.Services
 
             if (password != null)
             {
-                var pastFivePasswords = _dbContext.UserPasswords
+                var pastPasswords = _dbContext.UserPasswords
                     .Where(x => x.UserId == user.Id)
                     .OrderByDescending(x => x.CreatedDate)
                     .Take(3);
 
-                var passwordUsed = pastFivePasswords.Any(x => PasswordCheck(password.Password, x.Password));
+                var passwordUsed = pastPasswords.Any(x => PasswordCheck(password.Password, x.Password));
 
                 if (passwordUsed) return new UserResponse("New password must be different than the previous 3 passwords");
 
