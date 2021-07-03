@@ -2,14 +2,18 @@
 {
     public class OrderMenuItemDto
     {
-        public int OrderId { get; set; }
-        public int MenuItemId { get; set; }
+        public MenuItemDto MenuItem { get; set; }
+        public string CategoryName { get; set; }
         public int Quantity { get; set; }
+
+        public OrderMenuItemDto()
+        {
+
+        }
 
         public OrderMenuItemDto(OrderMenuItems item)
         {
-            OrderId = item.OrderId;
-            MenuItemId = item.MenuItemId;
+            MenuItem = new MenuItemDto(item.MenuItem);
             Quantity = item.Quantity;
         }
     }

@@ -1,28 +1,22 @@
-import {Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-import { Order } from '../../../models/order.interface';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { OrderDto } from '../../../models/order-dto/order-dto.interface';
 
 import { OrderService } from '../../../services/order.service';
-import {ApiResponse} from '../../../../models/api-response.interface';
+import { ApiResponse } from '../../../../models/api-response.interface';
+import { OrderMenuItemDto } from '../../../models/order-dto/order-menu-item-dto';
 
 @Component({
   selector: 'app-view-order',
   styleUrls: ['view-order.component.css'],
-  template: `
-    <div>
-      View Order {{orderId}}
-    </div>
-    <div>
-      {{this.order | json}}
-    </div>
-  `
+  templateUrl: 'view-order.component.html'
 })
 export class ViewOrderComponent implements OnInit {
   orderId: number;
-  order: Order;
+  order: OrderDto;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private orderService: OrderService
   ) {}
@@ -40,5 +34,13 @@ export class ViewOrderComponent implements OnInit {
           console.log(data.error);
         }
       })
+  }
+
+  getItemCost(orderItem: OrderMenuItemDto) {
+    return orderItem.MenuItem.Cost * orderItem.Quantity;
+  }
+
+  goBack() {
+    this.router.navigate(['/orders']);
   }
 }

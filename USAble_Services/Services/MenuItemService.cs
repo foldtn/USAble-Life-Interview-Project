@@ -23,7 +23,7 @@ namespace USAble_Services.Services
 
         public MenuItems GetByName(string name)
         {
-            return _dbContext.MenuItems.SingleOrDefault(x => x.Name == name);
+            return _dbContext.MenuItems.Where(x => x.Active).SingleOrDefault(x => x.Name == name);
         }
 
         public List<MenuItems> GetAll()
@@ -38,35 +38,21 @@ namespace USAble_Services.Services
 
             if (existingMenuItem != null)
             {
-                if (existingMenuItem.Active)
-                {
-                    return new MenuItemResponse(menuItem, $"{menuItem.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate tax item with amount user wanted to create with
-                    existingMenuItem.Active = true;
-                    existingMenuItem.Cost = menuItem.Cost;
-                    existingMenuItem.MenuItemCategoryId = menuItem.MenuItemCategoryId;
-                    existingMenuItem.ModifiedBy = menuItem.CreatedBy;
-                    existingMenuItem.ModifiedDate = DateTime.UtcNow;
-                }
+                return new MenuItemResponse(menuItem, $"{menuItem.Name} already exists");
             }
-            else
-            {
-                newMenuItem.Name = menuItem.Name;
-                newMenuItem.Cost = menuItem.Cost;
-                newMenuItem.MenuItemCategoryId = menuItem.MenuItemCategoryId;
-                newMenuItem.Active = true;
-                newMenuItem.CreatedBy = menuItem.CreatedBy;
-                newMenuItem.CreatedDate = DateTime.UtcNow;
 
-                _dbContext.MenuItems.Add(newMenuItem);
-            }
+            newMenuItem.Name = menuItem.Name;
+            newMenuItem.Cost = menuItem.Cost;
+            newMenuItem.MenuItemCategoryId = menuItem.MenuItemCategoryId;
+            newMenuItem.Active = true;
+            newMenuItem.CreatedBy = menuItem.CreatedBy;
+            newMenuItem.CreatedDate = DateTime.UtcNow;
+
+            _dbContext.MenuItems.Add(newMenuItem);
 
             _dbContext.SaveChanges();
 
-            return new MenuItemResponse(existingMenuItem != null ? existingMenuItem : newMenuItem);
+            return new MenuItemResponse(newMenuItem);
         }
 
         public MenuItemResponse Update(MenuItems menuItem)
@@ -77,40 +63,20 @@ namespace USAble_Services.Services
 
             var existingMenuItem = GetByName(menuItem.Name);
 
-            if (existingMenuItem != null && existingMenuItem.Id != menuItemToUpdate.Id)
+            if (existingMenuItem != null)
             {
-                if (existingMenuItem.Active)
-                {
-                    return new MenuItemResponse(menuItem, $"{menuItem.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate tax item with amount user wanted to create with
-                    existingMenuItem.Active = true;
-                    existingMenuItem.Cost = menuItem.Cost;
-                    existingMenuItem.MenuItemCategoryId = menuItem.MenuItemCategoryId;
-                    existingMenuItem.ModifiedBy = menuItem.ModifiedBy;
-                    existingMenuItem.ModifiedDate = DateTime.UtcNow;
-
-                    menuItemToUpdate.Active = false;
-                    menuItemToUpdate.ModifiedBy = menuItem.ModifiedBy;
-                    menuItemToUpdate.ModifiedDate = DateTime.UtcNow;
-                }
-            }
-            else
-            {
-                existingMenuItem = null;
-
-                menuItemToUpdate.Name = menuItem.Name;
-                menuItemToUpdate.Cost = menuItem.Cost;
-                menuItemToUpdate.MenuItemCategoryId = menuItem.MenuItemCategoryId;
-                menuItemToUpdate.ModifiedBy = menuItem.ModifiedBy;
-                menuItemToUpdate.ModifiedDate = DateTime.UtcNow;
+                return new MenuItemResponse(menuItem, $"{menuItem.Name} already exists");
             }
 
+            menuItemToUpdate.Name = menuItem.Name;
+            menuItemToUpdate.Cost = menuItem.Cost;
+            menuItemToUpdate.MenuItemCategoryId = menuItem.MenuItemCategoryId;
+            menuItemToUpdate.ModifiedBy = menuItem.ModifiedBy;
+            menuItemToUpdate.ModifiedDate = DateTime.UtcNow;
+            
             _dbContext.SaveChanges();
 
-            return new MenuItemResponse(existingMenuItem == null ? menuItemToUpdate : existingMenuItem);
+            return new MenuItemResponse(menuItemToUpdate);
         }
 
         public MenuItemResponse Delete(MenuItems menuItem)

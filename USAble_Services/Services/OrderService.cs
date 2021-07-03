@@ -6,7 +6,6 @@ using USAble_Services.Interfaces;
 using USAble_Data.Models.Requests;
 using USAble_Data.Models.Responses;
 using Microsoft.EntityFrameworkCore;
-using USAble_Data.Models.Dtos;
 
 namespace USAble_Services.Services
 {
@@ -32,6 +31,8 @@ namespace USAble_Services.Services
             return _dbContext.Orders
                 .Include(x => x.OrderMenuItems)
                 .Include(x => x.OrderTaxes)
+                .OrderByDescending(x => x.CreatedDate)
+                .ThenByDescending(x => x.Id)
                 .ToList();
         }
 

@@ -65,7 +65,7 @@
                    class="custom-control-input"
                    value="0"
                    (change)="onDiscountTypeChange($event)"
-                   [checked]="detail.DiscountType == 0"
+                   [checked]="tempDiscountType == 0"
             >
             <h6><label class="custom-control-label" [for]="'fixed'+detail.Id">Fixed</label></h6>
           </div>
@@ -76,7 +76,7 @@
                    class="custom-control-input"
                    value="1"
                    (change)="onDiscountTypeChange($event)"
-                   [checked]="detail.DiscountType == 1"
+                   [checked]="tempDiscountType == 1"
             >
             <h6><label class="custom-control-label" [for]="'percentage'+detail.Id">Percentage</label></h6>
           </div>

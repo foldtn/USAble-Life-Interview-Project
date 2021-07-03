@@ -23,7 +23,7 @@ namespace USAble_Services.Services
 
         public Discounts GetByName(string name)
         {
-            return _dbContext.Discounts.SingleOrDefault(x => x.Name == name);
+            return _dbContext.Discounts.Where(x => x.Active).SingleOrDefault(x => x.Name == name);
         }
 
         public List<Discounts> GetAll()
@@ -38,33 +38,20 @@ namespace USAble_Services.Services
 
             if (existingDiscount != null)
             {
-                if (existingDiscount.Active)
-                {
-                    return new DiscountResponse(discount, $"{discount.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate discount item with amount user wanted to create with
-                    existingDiscount.Active = true;
-                    existingDiscount.Amount = discount.Amount;
-                    existingDiscount.ModifiedBy = discount.CreatedBy;
-                    existingDiscount.ModifiedDate = DateTime.UtcNow;
-                }
+                return new DiscountResponse(discount, $"{discount.Name} already exists");
             }
-            else
-            {
-                newDiscount.Name = discount.Name;
-                newDiscount.Amount = discount.Amount;
-                newDiscount.Active = true;
-                newDiscount.CreatedBy = discount.CreatedBy;
-                newDiscount.CreatedDate = DateTime.UtcNow;
 
-                _dbContext.Discounts.Add(newDiscount);
-            }
+            newDiscount.Name = discount.Name;
+            newDiscount.Amount = discount.Amount;
+            newDiscount.Active = true;
+            newDiscount.CreatedBy = discount.CreatedBy;
+            newDiscount.CreatedDate = DateTime.UtcNow;
+
+            _dbContext.Discounts.Add(newDiscount);
 
             _dbContext.SaveChanges();
 
-            return new DiscountResponse(existingDiscount == null ? newDiscount : existingDiscount);
+            return new DiscountResponse(newDiscount);
         }
 
         public DiscountResponse Update(Discounts discount)
@@ -75,38 +62,19 @@ namespace USAble_Services.Services
 
             var existingDiscount = GetByName(discount.Name);
 
-            if (existingDiscount != null && existingDiscount.Id != discountToUpdate.Id)
+            if (existingDiscount != null)
             {
-                if (existingDiscount.Active)
-                {
-                    return new DiscountResponse(discount, $"{discount.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate discount item with amount user wanted to create with
-                    existingDiscount.Active = true;
-                    existingDiscount.Amount = discount.Amount;
-                    existingDiscount.ModifiedBy = discount.ModifiedBy;
-                    existingDiscount.ModifiedDate = DateTime.UtcNow;
-
-                    discountToUpdate.Active = false;
-                    discountToUpdate.ModifiedBy = discount.ModifiedBy;
-                    discountToUpdate.ModifiedDate = DateTime.UtcNow;
-                }
+                return new DiscountResponse(discount, $"{discount.Name} already exists");
             }
-            else
-            {
-                existingDiscount = null;
 
-                discountToUpdate.Name = discount.Name;
-                discountToUpdate.Amount = discount.Amount;
-                discountToUpdate.ModifiedBy = discount.ModifiedBy;
-                discountToUpdate.ModifiedDate = DateTime.UtcNow;
-            }
+            discountToUpdate.Name = discount.Name;
+            discountToUpdate.Amount = discount.Amount;
+            discountToUpdate.ModifiedBy = discount.ModifiedBy;
+            discountToUpdate.ModifiedDate = DateTime.UtcNow;
 
             _dbContext.SaveChanges();
 
-            return new DiscountResponse(existingDiscount == null ? discountToUpdate : existingDiscount);
+            return new DiscountResponse(discountToUpdate);
         }
 
         public DiscountResponse Delete(Discounts discount)

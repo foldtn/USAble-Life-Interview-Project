@@ -208,13 +208,13 @@ BEGIN
     -- Orders
 
     INSERT INTO [dbo].[Orders] (DiscountId, SubTotal, PreTaxTotal, TotalTaxAmount, Total, CreatedBy, CreatedDate)
-    VALUES (2, 23.00, 20.70, 10.00, 22.77, 3, GETDATE())
+    VALUES (2, 23.00, 20.70, 10.00, 22.77, @managerID, GETDATE())
 
     INSERT INTO [dbo].[Orders] (DiscountId, SubTotal, PreTaxTotal, TotalTaxAmount, Total, CreatedBy, CreatedDate)
-    VALUES(NULL, 14.50, 14.50, 10.00, 15.95, 3, GETDATE())
+    VALUES(NULL, 14.50, 14.50, 10.00, 15.95, @serverID, GETDATE())
     
     INSERT INTO [dbo].[Orders] (DiscountId, SubTotal, PreTaxTotal, TotalTaxAmount, Total, CreatedBy, CreatedDate)
-    VALUES(1, 52.50, 47.50, 10, 52.25, 3, GETDATE())
+    VALUES(1, 52.50, 47.50, 10, 52.25, @serverID, GETDATE())
 
     -- OrderMenuItems
 

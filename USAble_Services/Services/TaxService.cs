@@ -23,7 +23,7 @@ namespace USAble_Services.Services
 
         public Taxes GetByName(string name)
         {
-            return _dbContext.Taxes.SingleOrDefault(x => x.Name == name);
+            return _dbContext.Taxes.Where(x => x.Active).SingleOrDefault(x => x.Name == name);
         }
 
         public List<Taxes> GetAll()
@@ -38,33 +38,19 @@ namespace USAble_Services.Services
 
             if (existingTax != null)
             {
-                if (existingTax.Active) 
-                {
-                    return new TaxResponse(tax, $"{tax.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate tax item with amount user wanted to create with
-                    existingTax.Active = true;
-                    existingTax.Amount = tax.Amount;
-                    existingTax.ModifiedBy = tax.CreatedBy;
-                    existingTax.ModifiedDate = DateTime.UtcNow;
-                }
-            }
-            else
-            {
-                newTax.Name = tax.Name;
-                newTax.Amount = tax.Amount;
-                newTax.Active = true;
-                newTax.CreatedBy = tax.CreatedBy;
-                newTax.CreatedDate = DateTime.UtcNow;
-
-                _dbContext.Taxes.Add(newTax);
+                return new TaxResponse(tax, $"{tax.Name} already exists");
             }
 
+            newTax.Name = tax.Name;
+            newTax.Amount = tax.Amount;
+            newTax.Active = true;
+            newTax.CreatedBy = tax.CreatedBy;
+            newTax.CreatedDate = DateTime.UtcNow;
+
+            _dbContext.Taxes.Add(newTax);
             _dbContext.SaveChanges();
 
-            return new TaxResponse(existingTax != null ? existingTax : newTax);
+            return new TaxResponse(newTax);
         }
 
         public TaxResponse Update(Taxes tax)
@@ -75,38 +61,19 @@ namespace USAble_Services.Services
 
             var existingTax = GetByName(tax.Name);
 
-            if (existingTax != null && existingTax.Id != taxToUpdate.Id)
+            if (existingTax != null)
             {
-                if (existingTax.Active)
-                {
-                    return new TaxResponse(tax, $"{tax.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate tax item with amount user wanted to create with
-                    existingTax.Active = true;
-                    existingTax.Amount = tax.Amount;
-                    existingTax.ModifiedBy = tax.ModifiedBy;
-                    existingTax.ModifiedDate = DateTime.UtcNow;
-
-                    taxToUpdate.Active = false;
-                    taxToUpdate.ModifiedBy = tax.ModifiedBy;
-                    taxToUpdate.ModifiedDate = DateTime.UtcNow;
-                }
+                return new TaxResponse(tax, $"{tax.Name} already exists");
             }
-            else
-            {
-                existingTax = null;
 
-                taxToUpdate.Name = tax.Name;
-                taxToUpdate.Amount = tax.Amount;
-                taxToUpdate.ModifiedBy = tax.ModifiedBy;
-                taxToUpdate.ModifiedDate = DateTime.UtcNow;
-            }
+            taxToUpdate.Name = tax.Name;
+            taxToUpdate.Amount = tax.Amount;
+            taxToUpdate.ModifiedBy = tax.ModifiedBy;
+            taxToUpdate.ModifiedDate = DateTime.UtcNow;
 
             _dbContext.SaveChanges();
 
-            return new TaxResponse(existingTax == null ? taxToUpdate : existingTax);
+            return new TaxResponse(taxToUpdate);
         }
 
         public TaxResponse Delete(Taxes tax)

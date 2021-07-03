@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Discounts]
 (	
 	[Id] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	[Name] NVARCHAR(25) NOT NULL UNIQUE,
+	[Name] NVARCHAR(25) NOT NULL,
 	[Amount] DECIMAL(5,2) NOT NULL,
 	[DiscountType] INT NOT NULL,
 	[Active] BIT NOT NULL,

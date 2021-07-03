@@ -23,7 +23,7 @@ namespace USAble_Services.Services
 
         public MenuItemCategories GetByName(string name)
         {
-            return _dbContext.MenuItemCategories.SingleOrDefault(x => x.Name == name);
+            return _dbContext.MenuItemCategories.Where(x => x.Active).SingleOrDefault(x => x.Name == name);
         }
 
         public List<MenuItemCategories> GetAll()
@@ -38,31 +38,18 @@ namespace USAble_Services.Services
 
             if (existingCategory != null)
             {
-                if (existingCategory.Active)
-                {
-                    return new MenuItemCategoryResponse(category, $"{category.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate tax item with amount user wanted to create with
-                    existingCategory.Active = true;
-                    existingCategory.ModifiedBy = category.CreatedBy;
-                    existingCategory.ModifiedDate = DateTime.UtcNow;
-                }
-            }
-            else
-            {
-                newCategory.Name = category.Name;
-                newCategory.Active = true;
-                newCategory.CreatedBy = category.CreatedBy;
-                newCategory.CreatedDate = DateTime.UtcNow;
-
-                _dbContext.MenuItemCategories.Add(existingCategory == null ? newCategory : existingCategory);
+                return new MenuItemCategoryResponse(category, $"{category.Name} already exists");
             }
 
+            newCategory.Name = category.Name;
+            newCategory.Active = true;
+            newCategory.CreatedBy = category.CreatedBy;
+            newCategory.CreatedDate = DateTime.UtcNow;
+
+            _dbContext.MenuItemCategories.Add(newCategory);
             _dbContext.SaveChanges();
 
-            return new MenuItemCategoryResponse((existingCategory != null) ? existingCategory : newCategory);
+            return new MenuItemCategoryResponse(newCategory);
         }
 
         public MenuItemCategoryResponse Update(MenuItemCategories category)
@@ -73,36 +60,18 @@ namespace USAble_Services.Services
 
             var existingCategory = GetByName(category.Name);
 
-            if (existingCategory != null && existingCategory.Id != categoryToUpdate.Id)
+            if (existingCategory != null)
             {
-                if (existingCategory.Active)
-                {
-                    return new MenuItemCategoryResponse(category, $"{category.Name} already exists");
-                }
-                else
-                {
-                    // Reactivate category item with amount user wanted to create with
-                    existingCategory.Active = true;
-                    existingCategory.ModifiedBy = category.ModifiedBy;
-                    existingCategory.ModifiedDate = DateTime.UtcNow;
-
-                    categoryToUpdate.Active = false;
-                    categoryToUpdate.ModifiedBy = category.ModifiedBy;
-                    categoryToUpdate.ModifiedDate = DateTime.UtcNow;
-                }
+                return new MenuItemCategoryResponse(category, $"{category.Name} already exists");
             }
-            else
-            {
-                existingCategory = null;
 
-                categoryToUpdate.Name = category.Name;
-                categoryToUpdate.ModifiedBy = category.ModifiedBy;
-                categoryToUpdate.ModifiedDate = DateTime.UtcNow;
-            }
+            categoryToUpdate.Name = category.Name;
+            categoryToUpdate.ModifiedBy = category.ModifiedBy;
+            categoryToUpdate.ModifiedDate = DateTime.UtcNow;
 
             _dbContext.SaveChanges();
 
-            return new MenuItemCategoryResponse(existingCategory == null ? categoryToUpdate : existingCategory);
+            return new MenuItemCategoryResponse(categoryToUpdate);
         }
 
         public MenuItemCategoryResponse Delete(MenuItemCategories category)

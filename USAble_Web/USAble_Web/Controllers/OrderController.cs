@@ -18,13 +18,15 @@ namespace USAble_Web.Controllers
         private ITaxService _taxService;
         private IMenuItemService _menuItemService;
         private IMenuItemCategoryService _categoryService;
+        private IUserService _userService;
 
         public OrderController(
             IOrderService orderService,
             IDiscountService discountService,
             ITaxService taxService,
             IMenuItemService menuItemService,
-            IMenuItemCategoryService categoryService
+            IMenuItemCategoryService categoryService,
+            IUserService userService
         )
         {
             _orderService = orderService;
@@ -32,6 +34,7 @@ namespace USAble_Web.Controllers
             _taxService = taxService;
             _menuItemService = menuItemService;
             _categoryService = categoryService;
+            _userService = userService;
         }
 
         [Authorize]
@@ -44,7 +47,9 @@ namespace USAble_Web.Controllers
             {
                 var order = _orderService.GetById(id);
 
-                var orderDto = new OrderDto(order);
+                var user = _userService.GetById(order.CreatedBy);
+
+                var orderDto = new OrderDto(order, user);
 
                 if (order.DiscountId != null)
                 {
@@ -58,9 +63,14 @@ namespace USAble_Web.Controllers
 
                 foreach(var menuItem in order.OrderMenuItems)
                 {
-                    orderDto.MenuItems.Add(new MenuItemRequest()
+                    var item = _menuItemService.GetById(menuItem.MenuItemId);
+
+                    orderDto.MenuItems.Add(new OrderMenuItemDto()
                     {
-                        menuItem = _menuItemService.GetById(menuItem.MenuItemId),
+                        MenuItem = new MenuItemDto(item),
+                        CategoryName = (item.MenuItemCategoryId != null) 
+                            ? _categoryService.GetById((int)item.MenuItemCategoryId).Name 
+                            : null,
                         Quantity = menuItem.Quantity
                     });
                 }
@@ -93,7 +103,8 @@ namespace USAble_Web.Controllers
 
                 foreach (var order in orders)
                 {
-                    ordersDto.Add(new OrderDto(order));
+                    var user = _userService.GetById(order.CreatedBy);
+                    ordersDto.Add(new OrderDto(order, user));
                 }
 
                 response.success = true;

@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[MenuItems]
 (
 	[Id] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	[Name] NVARCHAR(25) NOT NULL UNIQUE,
+	[Name] NVARCHAR(25) NOT NULL,
 	[Cost] SMALLMONEY NOT NULL,
 	[MenuItemCategoryId] INT,
 	[Active] BIT NOT NULL,

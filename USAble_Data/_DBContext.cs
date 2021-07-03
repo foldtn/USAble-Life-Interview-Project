@@ -35,9 +35,6 @@ namespace USAble_Data
 
             modelBuilder.Entity<Discounts>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_Discounts_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Amount).HasColumnType("decimal(5, 2)");
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -60,9 +57,6 @@ namespace USAble_Data
 
             modelBuilder.Entity<MenuItemCategories>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_MenuItemCategories_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
@@ -83,9 +77,6 @@ namespace USAble_Data
 
             modelBuilder.Entity<MenuItems>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_MenuItems_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Cost).HasColumnType("smallmoney");
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -144,13 +135,13 @@ namespace USAble_Data
             {
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.PreTaxTotal).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.PreTaxTotal).HasColumnType("decimal(7, 2)");
 
-                entity.Property(e => e.SubTotal).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.SubTotal).HasColumnType("decimal(7, 2)");
 
-                entity.Property(e => e.Total).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Total).HasColumnType("decimal(7, 2)");
 
-                entity.Property(e => e.TotalTaxAmount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.TotalTaxAmount).HasColumnType("decimal(7, 2)");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.Orders)
@@ -164,9 +155,6 @@ namespace USAble_Data
 
             modelBuilder.Entity<Taxes>(entity =>
             {
-                entity.HasIndex(e => e.Name, "IX_Taxes_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.Amount).HasColumnType("decimal(5, 2)");
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
