@@ -130,7 +130,7 @@ export class PlaceOrderComponent implements OnInit {
     this.orderService.createOrder(event).subscribe((data: ApiResponse) => {
       if (data.success) {
         // redirect to view order : ID using payload ID
-        this.router.navigate(['/orders', { id: data.payload.Id }]);
+        this.router.navigate(['/orders',data.payload]);
       }
       else {
         this.failedMessage = data.error;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using USAble_Data;
 using USAble_Data.Models.Dtos;
 using USAble_Data.Models.Requests;
 using USAble_Services.Extensions;
@@ -15,10 +14,24 @@ namespace USAble_Web.Controllers
     public class OrderController : ControllerBase
     {
         private IOrderService _orderService;
+        private IDiscountService _discountService;
+        private ITaxService _taxService;
+        private IMenuItemService _menuItemService;
+        private IMenuItemCategoryService _categoryService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(
+            IOrderService orderService,
+            IDiscountService discountService,
+            ITaxService taxService,
+            IMenuItemService menuItemService,
+            IMenuItemCategoryService categoryService
+        )
         {
             _orderService = orderService;
+            _discountService = discountService;
+            _taxService = taxService;
+            _menuItemService = menuItemService;
+            _categoryService = categoryService;
         }
 
         [Authorize]
@@ -32,6 +45,25 @@ namespace USAble_Web.Controllers
                 var order = _orderService.GetById(id);
 
                 var orderDto = new OrderDto(order);
+
+                if (order.DiscountId != null)
+                {
+                    orderDto.Discount = new DiscountDto(_discountService.GetById((int)order.DiscountId));
+                }
+
+                foreach(var tax in order.OrderTaxes)
+                {
+                    orderDto.Taxes.Add(new TaxDto(_taxService.GetById(tax.TaxId)));
+                }
+
+                foreach(var menuItem in order.OrderMenuItems)
+                {
+                    orderDto.MenuItems.Add(new MenuItemRequest()
+                    {
+                        menuItem = _menuItemService.GetById(menuItem.MenuItemId),
+                        Quantity = menuItem.Quantity
+                    });
+                }
 
                 response.success = true;
                 response.payload = orderDto;

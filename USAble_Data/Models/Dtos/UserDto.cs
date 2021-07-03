@@ -15,6 +15,8 @@ namespace USAble_Data.Models.Dtos
         public DateTime? ModifiedDate { get; set; }
         public int? ModifiedBy { get; set; }
 
+        public UserRoleDto UserRole { get; set; }
+
         public UserDto(Users user)
         {
             if (user != null)
