@@ -43,7 +43,7 @@ Step 7: Update connectionstring
     * Update the DefaultConnection "Data Source" to your local db.
         * When publishing you can see the Data Source there.
     
-Step 6: You may get a prompt about SSL certificate to avoid errors - Say yes to this to avoid local errors with SSL
+Step 8: You may get a prompt about SSL certificate to avoid errors - Say yes to this to avoid local errors with SSL
 
 
 Notes:
