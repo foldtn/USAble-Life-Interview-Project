@@ -29,7 +29,22 @@ Step 4: Make sure USAble_Web project is selected as the start-up project
     * Right click the USAble_Web project
     * Click on "Set as Startup Project"
     
-Step 5: You are good to run the project now
+Step 5: Make sure you have Node.js installed
+
+    * https://nodejs.org/en/download/ - install latest stable (I did msi installer for 64-bit)
+    
+Step 6: Build the solution
+
+    * Right click on the solution in visual studio and click on "Build Solution" - this will install the packages needed.
+    
+Step 7: Update connectionstring
+
+    * Go to "appsettings.json" in USAble_Web project
+    * Update the DefaultConnection "Data Source" to your local db.
+        * When publishing you can see the Data Source there.
+    
+Step 6: You may get a prompt about SSL certificate to avoid errors - Say yes to this to avoid local errors with SSL
+
 
 Notes:
 
