@@ -3,7 +3,7 @@
 This project was an Interview Project for USAble Life (completed within 2 weeks)
 It is meant to showcase my current skills as of 6/21/2021 - 7/5/2021, I learned a lot through this project expecially in angular. You may notice that some pages are using ngModal and some are using Reactive Forms. If I had the time I would choose to go back and refacter all pages to be in Reactive Forms.
 
-There is a known visual bug on the "Menu Items" page, when you go to edit a menu item the "Fixed & Percentage" radio buttons don't show as selected but they are. I think upgrading the page to reactive forms would have fixed this but I ran out of time for this project. As this project was for showcasing my current skills between 6/21/2021 - 7/5/2021, it wouldn't be right of me to update it after the project was done. I'll probably redo this project at a later date to showcase how much I've improved.
+There is a known visual bug on the "Menu Items" page, when you go to edit a menu item the "Fixed & Percentage" radio buttons don't show as selected but they are, the functionality still works. I think upgrading the page to reactive forms would have fixed this but I ran out of time for this project. As this project was for showcasing my current skills between 6/21/2021 - 7/5/2021, it wouldn't be right of me to update it after the project was done. I'll probably redo this project at a later date to showcase how much I've improved.
 
 To get the project running 
 
