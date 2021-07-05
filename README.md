@@ -45,6 +45,8 @@ Step 7: Update connectionstring
     
 Step 8: You may get a prompt about SSL certificate to avoid errors - Say yes to this to avoid local errors with SSL
 
+You should be good to go at this point :)
+
 
 Notes:
 
