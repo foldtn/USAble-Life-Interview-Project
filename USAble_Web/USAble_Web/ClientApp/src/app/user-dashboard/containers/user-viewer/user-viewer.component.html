@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-center mb-4">
+  <button type="button" class="btn btn-success" (click)="goBack()">Back to Users</button>
+</div>
+<div class="col-sm-4 offset-sm-4 mt-4">
+  <div class="card" *ngIf="user !== undefined">
+    <div class="card-header">
+      <h1 class="text-center">User</h1>
+      <div *ngIf="tempPassword !== undefined" class="mt-4">
+        <div class="alert alert-success alert-dismissible">
+          <a class="close" data-dismiss="alert" aria-label="close" (click)="closeFailedAlert()">&times;</a>
+          <h5 class="text-center mt-2">New temporary password has been generated for this user.</h5>
+          <h5 class="text-center"><strong>{{ tempPassword }}</strong></h5>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-4">
+          <h5>Username:</h5>
+        </div>
+        <div class="col-sm">
+          <p>{{ user.Username }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <h5>First Name:</h5>
+        </div>
+        <div class="col-sm">
+          <p>{{ user.FirstName }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <h5>Last Name:</h5>
+        </div>
+        <div class="col-sm">
+          <p>{{ user.LastName }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <h5>Role:</h5>
+        </div>
+        <div class="col-sm">
+          <p>{{ user.UserRole.Name }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-sm-6 mt-2 mb-2">
+          <button type="button" class="btn btn-warning btn-sm btn-block" (click)="generateNewPassword()"><strong>Generate New Password</strong></button>
+        </div>
+        <div class="col-sm-6 mt-2 mb-2">
+          <app-user-remove [user]="user" (remove)="removeUser()"></app-user-remove>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

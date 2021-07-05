@@ -88,6 +88,10 @@ export class DiscountFormModalContent implements OnInit {
     else if (!this.helperService.hasTwoDecimals(value)) {
       this.amountError = 'Only 2 decimal places allowed'
     }
+    // throw validation error if outside of 0 - 100 number range
+    else if (value <= 0 || 100 < value) {
+      this.amountError = 'Not within range (0.01-100)'
+    }
     else {
       this.tempAmount = value;
       this.amountError = undefined;

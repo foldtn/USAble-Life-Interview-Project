@@ -102,13 +102,13 @@ export class DiscountDetailComponent implements OnChanges {
     if (value === undefined || value === null) {
       this.discountAmountError = 'Discount Amount is Required'
     }
-    // throw validation error if outside of 0 - 100 number range
-    else if (value < 0.5 || 100 < value) {
-      this.discountAmountError = 'Not within range (0.5-100)'
-    }
     // throw validation error if a decimal
     else if (!this.helperService.hasTwoDecimals(value)) {
       this.discountAmountError = 'Only 2 decimal places allowed'
+    }
+    // throw validation error if outside of 0 - 100 number range
+    else if (value <= 0 || 100 < value) {
+      this.discountAmountError = 'Not within range (0.01-100)'
     }
     else {
       this.tempAmount = value;

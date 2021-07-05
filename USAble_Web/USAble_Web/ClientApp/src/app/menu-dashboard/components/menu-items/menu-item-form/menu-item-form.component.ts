@@ -5,7 +5,7 @@ import { MenuItems } from '../../../models/menu-items.interface';
 import { MenuItemCategories } from '../../../models/menu-item-categories.interface';
 
 import { HelperService } from '../../../../services/helper.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-menu-item-form',
@@ -67,8 +67,6 @@ export class MenuItemFormModalContent implements OnInit {
   ) {}
 
   ngOnInit() {
-    let test = this.categories;
-
     this.menuItemDetailForm = this.fb.group({
       Name: [
         '',
@@ -82,7 +80,7 @@ export class MenuItemFormModalContent implements OnInit {
         [
           Validators.required,
           Validators.pattern(this.helperService.twoDecimalPattern()),
-          Validators.min(1),
+          Validators.min(0.01),
           Validators.max(100)
         ]
       ],

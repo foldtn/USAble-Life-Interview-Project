@@ -78,6 +78,10 @@ export class TaxFormModalContent implements OnInit {
     if (value === undefined || value === null) {
       this.amountError = 'Tax Amount is Required'
     }
+    // throw validation error if outside of 0 - 100 number range
+    else if (value < 1 || 100 < value) {
+      this.amountError = 'Not within range (1-100)'
+    }
     // throw validation error if a decimal
     else if (!this.helperService.hasTwoDecimals(value)) {
       this.amountError = 'Only 2 decimal places allowed'

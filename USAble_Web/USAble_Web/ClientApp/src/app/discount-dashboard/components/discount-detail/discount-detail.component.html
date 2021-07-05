@@ -41,10 +41,10 @@
                      (input)="onAmountChange(amountInput.value)"
                      #amountInput="ngModel"
                      [ngModel]="detail.Amount"
-                     min="1"
+                     min="0.01"
                      max="100"
                      step="1"
-                     placeholder="0.5-100"
+                     placeholder="0.01-100"
               >
               <div *ngIf="tempDiscountType === 1" class="input-group-append">
                 <span class="input-group-text">%</span>

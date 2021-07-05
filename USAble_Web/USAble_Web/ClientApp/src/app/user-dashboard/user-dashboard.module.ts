@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 // Containers
@@ -12,6 +12,11 @@ import { UserProfileComponent } from './containers/user-profile/user-profile.com
 // Components
 import { UserDetailComponent } from './components/user-details/user-detail.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
+import { UserFormModalContent } from './components/user-form/user-form.component';
+import { UserRemoveComponent } from './components/user-remove/user-remove.component';
+import { UserRemoveConfirmationModalContent } from './components/user-remove/user-remove.component';
+import { UserProfileFormComponent } from './components/user-profile/user-profile-form/user-profile-form.component';
+import { UserProfilePasswordFormComponent } from './components/user-profile/user-profile-password-form/user-profile-password-form.component';
 
 // Services
 import { UserDashboardService } from './user-dashboard.service';
@@ -42,15 +47,25 @@ const routes: Routes = [
     // Generic Components
     UserDetailComponent,
     UserFormComponent,
+    UserFormModalContent,
+    UserRemoveComponent,
+    UserRemoveConfirmationModalContent,
+    UserProfileFormComponent,
+    UserProfilePasswordFormComponent,
   ],
   imports: [
     // Angular Modules
     CommonModule,
     FormsModule,
-    RouterModule.forChild (routes),
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
   ],
   providers: [
     UserDashboardService,
+  ],
+  entryComponents: [
+    UserFormModalContent,
+    UserRemoveConfirmationModalContent,
   ]
 })
 export class UserDashboardModule {}

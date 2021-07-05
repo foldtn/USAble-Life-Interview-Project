@@ -1,0 +1,121 @@
+<form novalidate [formGroup]="userForm" (ngSubmit)="userFormModal.close(userForm)">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-8 offset-2 text-center">
+          <h3 class="modal-title">Create New User</h3>
+        </div>
+        <div class="col-2 d-flex justify-content-start">
+          <button type="button" class="close" aria-label="Close" (click)="userFormModal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <h6><label for="username"><span class="requiredAsterisk">*</span> Username: </label></h6>
+        </div>
+        <div class="col-sm">
+          <input id="username"
+                 formControlName="Username"
+                 class="form-control"
+                 type="number"
+                 [maxLength]="4"
+                 (input)="onUsernameChange()"
+                 [class.valid]="isUsernameValid('Username')"
+                 [class.invalid]="isUsernameInvalid('Username')"
+          >
+        </div>
+        <div class="col-sm offset-sm-6" *ngIf="hasErrors('Username') || integerError || usernameExists">
+          <small class="text-danger"
+                 *ngIf="getFormGroup('Username').hasError('required')">
+            Required.
+          </small>
+          <small class="text-danger"
+                 *ngIf="getFormGroup('Username').hasError('max')">
+            Must be between 1-9999.
+          </small>
+          <small class="text-danger" *ngIf="integerError">
+            Must be a whole number.
+          </small>
+          <small class="text-danger" *ngIf="usernameExists">
+            Username already exists.
+          </small>
+        </div>
+      </div><!--form-group-->
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <h6>
+            <label for="firstName"><span class="requiredAsterisk">*</span> First Name: </label>
+          </h6>
+        </div>
+        <div class="col-sm input-group">
+          <input id="firstName"
+                 formControlName="FirstName"
+                 class="form-control"
+                 type="text"
+                 [class.valid]="isValid('FirstName')"
+                 [class.invalid]="isInvalid('FirstName')"
+          >
+        </div>
+        <div class="col-sm offset-sm-6" *ngIf="hasErrors('FirstName')">
+          <small class="text-danger"
+                 *ngIf="getFormGroup('FirstName').hasError('required')">
+            Required.
+          </small>
+        </div>
+      </div><!--form-group-->
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <h6>
+            <label for="lastName"><span class="requiredAsterisk">*</span> Last Name: </label>
+          </h6>
+        </div>
+        <div class="col-sm input-group">
+          <input id="lastName"
+                 formControlName="LastName"
+                 class="form-control"
+                 type="text"
+                 [class.valid]="isValid('LastName')"
+                 [class.invalid]="isInvalid('LastName')"
+          >
+        </div>
+        <div class="col-sm offset-sm-6" *ngIf="hasErrors('LastName')">
+          <small class="text-danger"
+                 *ngIf="getFormGroup('LastName').hasError('required')">
+            Required.
+          </small>
+        </div>
+      </div><!--form-group-->
+      <div class="form-group">
+        <div class="row">
+          <div *ngFor="let role of roles;" class="col-sm d-flex justify-content-center">
+            <div>
+              <input [id]="'userRole_' + role.Id"
+                     formControlName="UserRoleId"
+                     class="form-check-input"
+                     type="radio"
+                     [value]="role.Id"
+              >
+              <h6>
+                <label class="form-check-label" [for]="'userRole_' + role.Id">
+                  {{ role.Name }} <span class="requiredAsterisk">*</span>
+                </label>
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div><!--form-group-->
+    </div><!--card-body-->
+    <div class="card-footer d-flex justify-content-center">
+      <button type="submit"
+              [disabled]="!userForm.valid || integerError || usernameExists"
+              class="btn btn-primary btn-lg"
+      >
+        Submit
+      </button>
+    </div>
+  </div><!--card-->
+</form>

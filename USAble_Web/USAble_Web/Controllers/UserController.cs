@@ -36,29 +36,45 @@ namespace USAble_Web.Controllers
         [HttpGet("GetById")]
         public IActionResult GetById(int id)
         {
-            var response = _userService.GetById(id);
+            var response = new Response();
 
-            if (response == null)
-                return BadRequest(new { message = "Specified user was not found" });
+            try
+            {
+                var user = _userService.GetById(id);
 
-            return Ok(response);
+                var role = _userService.GetUserRoleById(user.UserRoleId);
+                var userDto = new UserDto(user, role);
+
+                response.success = true;
+                response.payload = userDto;
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
         }
 
         [Authorize]
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll(int currentUserId)
         {
             var response = new Response();
 
             try
             {
-                var users = _userService.GetAll();
+                var users = _userService.GetAll(currentUserId);
 
                 var usersDto = new List<UserDto>();
 
                 foreach (var user in users)
                 {
-                    usersDto.Add(new UserDto(user));
+                    var role = _userService.GetUserRoleById(user.UserRoleId);
+                    usersDto.Add(new UserDto(user, role));
                 }
 
                 response.success = true;
@@ -76,14 +92,67 @@ namespace USAble_Web.Controllers
         }
 
         [Authorize]
-        [HttpPost("Create")]
-        public IActionResult Create(UserRequest request)
+        [HttpGet("GetRoles")]
+        public IActionResult GetRoles()
         {
             var response = new Response();
 
             try
             {
-                var userResponse = _userService.Create(request.User, request.Password);
+                var roles = _userService.GetUserRoles();
+
+                var rolesDto = new List<UserRoleDto>();
+
+                foreach (var role in roles)
+                {
+                    rolesDto.Add(new UserRoleDto(role));
+                }
+
+                response.success = true;
+                response.payload = rolesDto;
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetAllUsernames")]
+        public IActionResult GetAllUsernames()
+        {
+            var response = new Response();
+
+            try
+            {
+                response.success = true;
+                response.payload = _userService.GetAllUsernames();
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
+        }
+
+        [Authorize]
+        [HttpPost("Create")]
+        public IActionResult Create(Users user)
+        {
+            var response = new Response();
+
+            try
+            {
+                var userResponse = _userService.Create(user);
 
                 if (userResponse.errorMessage.HasValue())
                 {
@@ -95,7 +164,9 @@ namespace USAble_Web.Controllers
                     response.success = true;
                 }
 
-                response.payload = new UserDto(userResponse.user);
+                var role = _userService.GetUserRoleById(userResponse.user.UserRoleId);
+
+                response.payload = new UserDto(userResponse.user, role, userResponse.randomPassword);
 
                 return Ok(response.ConvertToJsonObject());
             }
@@ -110,13 +181,13 @@ namespace USAble_Web.Controllers
 
         [Authorize]
         [HttpPost("Update")]
-        public IActionResult Update(UserRequest request)
+        public IActionResult Update(Users user)
         {
             var response = new Response();
 
             try
             {
-                var userResponse = _userService.Update(request.User, request.Password);
+                var userResponse = _userService.Update(user);
 
                 if (userResponse.errorMessage.HasValue())
                 {
@@ -162,6 +233,73 @@ namespace USAble_Web.Controllers
                 }
 
                 response.payload = new UserDto(userResponse.user);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
+        }
+
+        [Authorize]
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword(UserRequest request)
+        {
+            var response = new Response();
+
+            try
+            {
+                var userResponse = _userService.ResetPassword(request);
+
+                if (userResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = userResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new UserDto(userResponse.user);
+
+                return Ok(response.ConvertToJsonObject());
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.error = ex.Message;
+
+                return BadRequest(response.ConvertToJsonObject());
+            }
+        }
+
+        [Authorize]
+        [HttpPost("GenerateRandomPassword")]
+        public IActionResult GenerateRandomPassword(Users user)
+        {
+            var response = new Response();
+
+            try
+            {
+                var request = new UserRequest(user);
+                var userResponse = _userService.ResetPassword(request);
+
+                if (userResponse.errorMessage.HasValue())
+                {
+                    response.success = false;
+                    response.error = userResponse.errorMessage;
+                }
+                else
+                {
+                    response.success = true;
+                }
+
+                response.payload = new UserDto(userResponse.user, userResponse.randomPassword);
 
                 return Ok(response.ConvertToJsonObject());
             }

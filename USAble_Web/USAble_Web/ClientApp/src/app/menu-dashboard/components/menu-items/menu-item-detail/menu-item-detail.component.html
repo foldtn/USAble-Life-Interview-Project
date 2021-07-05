@@ -37,7 +37,7 @@
                    class="form-control"
                    type="number"
                    step="1"
-                   placeholder="1-100"
+                   placeholder="0.01-100"
                    [class.valid]="getFormGroup('Cost').valid &&
                       (getFormGroup('Cost').dirty || getFormGroup('Cost').touched)"
                    [class.invalid]="getFormGroup('Cost').invalid &&
@@ -55,7 +55,7 @@
             </small>
             <small class="text-danger"
                    *ngIf="getFormGroup('Cost').hasError('min') || getFormGroup('Cost').hasError('max')">
-              Must be between 1-100.
+              Must be between 0.01-100.
             </small>
           </div>
         </div><!--form-group-->

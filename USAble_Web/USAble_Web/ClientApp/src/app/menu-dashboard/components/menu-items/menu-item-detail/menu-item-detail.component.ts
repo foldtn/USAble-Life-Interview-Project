@@ -80,7 +80,7 @@ export class MenuItemDetailComponent implements OnInit, OnChanges {
         [
           Validators.required,
           Validators.pattern(this.helperService.twoDecimalPattern()),
-          Validators.min(1),
+          Validators.min(0.01),
           Validators.max(100)
         ]
       ],

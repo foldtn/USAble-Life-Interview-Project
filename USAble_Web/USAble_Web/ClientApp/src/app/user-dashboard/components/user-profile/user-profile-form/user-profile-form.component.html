@@ -1,0 +1,54 @@
+<form novalidate [formGroup]="userForm" (ngSubmit)="onUpdate()">
+  <div class="form-group row">
+    <div class="col-sm-4">
+      <h6>
+        <label for="firstName"><span class="requiredAsterisk">*</span> First Name: </label>
+      </h6>
+    </div>
+    <div class="col-sm-8 input-group">
+      <input id="firstName"
+             formControlName="FirstName"
+             class="form-control"
+             type="text"
+             [class.valid]="isValid('FirstName')"
+             [class.invalid]="isInvalid('FirstName')"
+      >
+    </div>
+    <div class="col-sm-8 offset-sm-4" *ngIf="hasErrors('FirstName')">
+      <p class="text-danger"
+             *ngIf="getFormGroup('FirstName').hasError('required')">
+        Required.
+      </p>
+    </div>
+  </div><!--form-group-->
+  <div class="form-group row">
+    <div class="col-sm-4">
+      <h6>
+        <label for="lastName"><span class="requiredAsterisk">*</span> Last Name: </label>
+      </h6>
+    </div>
+    <div class="col-sm-8 input-group">
+      <input id="lastName"
+             formControlName="LastName"
+             class="form-control"
+             type="text"
+             [class.valid]="isValid('LastName')"
+             [class.invalid]="isInvalid('LastName')"
+      >
+    </div>
+    <div class="col-sm-8 offset-sm-4" *ngIf="hasErrors('LastName')">
+      <p class="text-danger"
+             *ngIf="getFormGroup('LastName').hasError('required')">
+        Required.
+      </p>
+    </div>
+  </div><!--form-group-->
+  <div class="mt-4 d-flex justify-content-center">
+    <button type="submit"
+            [disabled]="!userForm.valid"
+            class="btn btn-primary btn-lg"
+    >
+      Update
+    </button>
+  </div>
+</form>

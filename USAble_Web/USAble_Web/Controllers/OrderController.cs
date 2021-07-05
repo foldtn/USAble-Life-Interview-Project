@@ -104,7 +104,14 @@ namespace USAble_Web.Controllers
                 foreach (var order in orders)
                 {
                     var user = _userService.GetById(order.CreatedBy);
-                    ordersDto.Add(new OrderDto(order, user));
+                    var orderDto = new OrderDto(order, user);
+
+                    if (order.DiscountId != null)
+                    {
+                        orderDto.Discount = new DiscountDto(_discountService.GetById((int)order.DiscountId));
+                    }
+
+                    ordersDto.Add(orderDto);
                 }
 
                 response.success = true;

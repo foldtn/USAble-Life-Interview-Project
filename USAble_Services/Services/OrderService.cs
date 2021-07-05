@@ -38,6 +38,8 @@ namespace USAble_Services.Services
 
         public OrderResponse Create(OrderRequest request)
         {
+            using var transction = _dbContext.Database.BeginTransaction();
+
             var newOrder = new Orders
             {
                 DiscountId = request.order.DiscountId,
@@ -72,6 +74,8 @@ namespace USAble_Services.Services
             }
 
             _dbContext.SaveChanges();
+
+            transction.Commit();
 
             return new OrderResponse(_dbContext.Orders
                 .Include(x => x.OrderMenuItems)
